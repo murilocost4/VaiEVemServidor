@@ -8,10 +8,10 @@ public class Conector {
     
     public static Connection getConnection() {
         try {
-            String url = "jdbc:mysql://localhost:3306/";
+            String url = "jdbc:mysql://127.0.0.1:3306/";
             String banco = "vaievem";
             String usuario = "root";
-            String senha = "";
+            String senha = "123456";
             
             con = DriverManager.getConnection(url+banco,usuario,senha);
             return con;
