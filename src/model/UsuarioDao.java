@@ -20,6 +20,10 @@ public class UsuarioDao {
     
     private Connection con;
     
+    public UsuarioDao(){
+        this.con = Conector.getConnection();
+    }
+    
     public Usuario efetuarLogin(Usuario user) {
         // num preparedStatement nós preparamos o SQL para rodar
         PreparedStatement stmt = null;

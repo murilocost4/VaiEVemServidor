@@ -4,10 +4,15 @@
  */
 package model;
 
+import factory.Conector;
+import java.sql.*;
+
 /**
  *
  * @author murilocost4
  */
 public class StatusPassageiroDao {
+    
+    private Connection con;
     
 }
