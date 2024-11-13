@@ -1,18 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
-
-import factory.Conector;
-import java.sql.*;
 
 /**
  *
- * @author murilocost4
+ * @author mariana
  */
 public class StatusPassageiroDao {
-    
-    private Connection con;
     
 }
