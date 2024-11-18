@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import model.UsuarioDao;
 import model.ViagemDao;
+import modelDominio.Condutor;
 import modelDominio.Usuario;
 import modelDominio.Viagem;
 
@@ -42,7 +43,7 @@ public class TrataClienteController extends Thread {
                 if (comando.equalsIgnoreCase("UsuarioEfetuarLogin")){
                     out.writeObject("ok");
                     Usuario user = (Usuario) in.readObject();
-                    System.out.println("Usuário recebido do cliente: "+user);
+                    System.out.println("Usuário recebido do cliente: "+user.toString());
                     // Proximo passo é consultar no banco de dados para verificar
                     // se este usuário existe.
                     // por enquanto estamos devolvendo NULO pois ainda não temos
@@ -51,6 +52,15 @@ public class TrataClienteController extends Thread {
                     Usuario userLogin = usdao.efetuarLogin(user);
                     System.out.println(userLogin);
                     out.writeObject(userLogin);
+                }else if (comando.equalsIgnoreCase("CondutorLista")){
+                    // esse comando irá retornar todos os registros
+                    // que existem na tabela Condutor
+                    // criar objeto de ViagemDao
+                    UsuarioDao usDao = new UsuarioDao();
+                    // chama método getViagemLista() e guarda resultado em listaViagens
+                    ArrayList<Condutor> listaCondutor = usDao.getListaCondutor();
+                    //devolve a lista para o cliente
+                    out.writeObject(listaCondutor);
                 }else if (comando.equalsIgnoreCase("ViagemLista")){
                     // esse comando irá retornar todos os registros
                     // que existem na tabela Viagem
@@ -113,6 +123,22 @@ public class TrataClienteController extends Thread {
                     UsuarioDao usrdao = new UsuarioDao();
                     ArrayList<Usuario> listausr = usrdao.getListaUsuarios();
                     out.writeObject(listausr);
+                } else if (comando.equalsIgnoreCase("viagemIniciar")) {
+                    out.writeObject("ok");
+                    Viagem v = (Viagem) in.readObject();
+                    ViagemDao vDao = new ViagemDao();
+                    out.writeObject(vDao.iniciar(v));
+                } else if (comando.equalsIgnoreCase("viagemFinalizar")) {
+                    out.writeObject("ok");
+                    Viagem v = (Viagem) in.readObject();
+                    ViagemDao vDao = new ViagemDao();
+                    out.writeObject(vDao.finalizar(v));
+                } else if (comando.equalsIgnoreCase("acompanharViagem")) {
+                    out.writeObject("ok");
+                    Viagem v = (Viagem) in.readObject();
+                    ViagemDao vDao = new ViagemDao();
+                    out.writeObject(vDao.acompanharViagem(idUnico));
+                    
                 }else{
                     // comando inválido e não reconhecido
                     out.writeObject("nok"); 

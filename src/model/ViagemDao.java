@@ -5,9 +5,12 @@ import factory.Conector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import modelDominio.Viagem;
 
 /**
@@ -155,6 +158,101 @@ public class ViagemDao {
             }
             return result;
         }
+    }
+    
+    public boolean iniciar(Viagem v) {
+        PreparedStatement stmt = null;
+        boolean result = false;
+        try {
+            String sql = "update viagem set status_viagem=2 where trip_id=?";
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, v.getTrip_id());
+            stmt.execute();
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+                con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        } 
+    }
+    
+    public boolean finalizar(Viagem v) {
+        PreparedStatement stmt = null;
+        boolean result = false;
+        try {
+            String sql = "update viagem set status_viagem=3 where trip_id=?";
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, v.getTrip_id());
+            stmt.execute();
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+                con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        } 
+    }
+    
+    public Map<String, Object> acompanharViagem(int idViagem) {
+        // SQL para recuperar as informações da viagem
+        String sql = "SELECT origem, destino, data, saida, retorno, status_viagem, condutor " +
+                     "FROM viagem WHERE trip_id = ?";
+
+        // Variáveis para conexão e resultado
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Map<String, Object> dadosViagem = new HashMap<>();
+
+        try {
+            // Obter conexão com o banco de dados
+
+            // Preparar a consulta
+            preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, idViagem); // Passar o id da viagem como parâmetro
+
+            // Executar a consulta
+            resultSet = preparedStatement.executeQuery();
+
+            // Verificar se encontrou dados para a viagem
+            if (resultSet.next()) {
+                dadosViagem.put("origem", resultSet.getString("origem"));
+                dadosViagem.put("destino", resultSet.getString("destino"));
+                dadosViagem.put("data", resultSet.getDate("data"));
+                dadosViagem.put("saida", resultSet.getTimestamp("saida"));
+                dadosViagem.put("retorno", resultSet.getTimestamp("retorno"));
+                dadosViagem.put("status_viagem", resultSet.getInt("status_viagem"));
+                dadosViagem.put("condutor", resultSet.getInt("condutor"));
+            } else {
+                // Caso não encontre a viagem
+                dadosViagem.put("erro", "Viagem não encontrada.");
+            }
+        } catch (SQLException e) {
+            // Lidar com erros de SQL
+            e.printStackTrace();
+            dadosViagem.put("erro", "Erro ao acessar os dados da viagem.");
+        } finally {
+            // Fechar recursos
+            try {
+                preparedStatement.close();
+                con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+        }
+
+        return dadosViagem;
     }
     
 }

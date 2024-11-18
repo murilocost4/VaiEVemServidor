@@ -11,7 +11,7 @@ public class Conector {
             String url = "jdbc:mysql://127.0.0.1:3306/";
             String banco = "vaievem";
             String usuario = "root";
-            String senha = "";
+            String senha = "123456";
             
             con = DriverManager.getConnection(url+banco,usuario,senha);
             return con;
@@ -21,5 +21,6 @@ public class Conector {
             // se der erro ao conector, irei devolver a conexão nula
             return null; 
         }
+        
     }
 }

@@ -20,12 +20,21 @@ public class UsuarioDao {
     
     private Connection con;
     
+    public UsuarioDao() {
+        con = Conector.getConnection();
+    }
+    
     public Usuario efetuarLogin(Usuario user) {
         // num preparedStatement nós preparamos o SQL para rodar
         PreparedStatement stmt = null;
         // nesta variável guardaremos o usuário
         // selecionado do banco
         Usuario usuarioSelecionado = null;
+        
+        if (this.con == null) {
+            System.out.println("Conexão nula...");
+        }
+        
         try {
             String sql = "select * from usuario where email = ? and senha = ?";
             // preparando o SQL para substituir os ?s
@@ -268,7 +277,35 @@ public class UsuarioDao {
             System.out.println(e.getErrorCode() + "-" + e.getMessage());
             return null;
         }
-
+        
     }
+    
+    public ArrayList<Condutor> getListaCondutor() {
+        Statement stmt = null; // usado para rodar SQL
+        ArrayList<Condutor> listaCondutor = new ArrayList<Condutor>();
+
+        try {
+            // cria o objeto para rodar o SQL
+            stmt = con.createStatement();
+            // passando a string SQL que faz o SELECT
+            ResultSet res = stmt.executeQuery("select * from usuario where tipo = 2");
+
+            // Pebkorrendo o resultado - res
+            while (res.next()) {
+                Condutor cond = null;
+                listaCondutor.add(cond);
+            }
+            res.close();// fechando o resultado
+            stmt.close();// fechando statment
+            con.close(); // fechando conexão com o banco
+            return listaCondutor; // retornando a lista de gastomensals
+        } catch (SQLException e) {
+            System.out.println(e.getErrorCode() + "-" + e.getMessage());
+            return null;
+        }
+        
+    }
+    
+    
     
 }
