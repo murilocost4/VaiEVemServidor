@@ -237,35 +237,27 @@ public class UsuarioDao {
 
             // Pebkorrendo o resultado - res
             while (res.next()) {
-                Usuario usr;
-                if (res.getInt("tipo") == 1) { // é administrador
-                    usr = new Admin(res.getInt("user_id"),
-                            res.getString("nome"),
-                            res.getString("cpf"),
-                            res.getString("nascimento"),
-                            res.getString("endereco"),
-                            res.getString("fone"),
-                            res.getString("email"),
-                            res.getString("senha"));
-                } else if (res.getInt("tipo") == 2) {
-                    usr = new Condutor(res.getInt("user_id"),
-                            res.getString("nome"),
-                            res.getString("cpf"),
-                            res.getString("nascimento"),
-                            res.getString("endereco"),
-                            res.getString("fone"),
-                            res.getString("email"),
-                            res.getString("senha"));
-                } else {
-                    usr = new Passageiro(res.getInt("user_id"),
-                            res.getString("nome"),
-                            res.getString("cpf"),
-                            res.getString("nascimento"),
-                            res.getString("endereco"),
-                            res.getString("fone"),
-                            res.getString("email"),
-                            res.getString("senha"));
-                }
+            Usuario usr;
+            int tipo = res.getInt("tipo");
+
+            // Extração de dados comuns
+            int id = res.getInt("user_id");
+            String nome = res.getString("nome");
+            String cpf = res.getString("cpf");
+            String nascimento = res.getString("nascimento");
+            String endereco = res.getString("endereco");
+            String fone = res.getString("fone");
+            String email = res.getString("email");
+            String senha = res.getString("senha");
+
+            // Construção baseada no tipo
+            if (tipo == 1) {
+                usr = new Admin(id, nome, cpf, nascimento, endereco, fone, email, senha);
+            } else if (tipo == 2) {
+                usr = new Condutor(id, nome, cpf, nascimento, endereco, fone, email, senha);
+            } else {
+                usr = new Passageiro(id, nome, cpf, nascimento, endereco, fone, email, senha);
+            }
 
                 // adicionando na lista auxiliar
                 listausr.add(usr);
@@ -293,7 +285,15 @@ public class UsuarioDao {
 
             // Pebkorrendo o resultado - res
             while (res.next()) {
-                Condutor cond = null;
+                Condutor cond;
+                cond = new Condutor(res.getInt("user_id"),
+                            res.getString("nome"),
+                            res.getString("cpf"),
+                            res.getString("nascimento"),
+                            res.getString("endereco"),
+                            res.getString("fone"),
+                            res.getString("email"),
+                            res.getString("senha"));
                 listaCondutor.add(cond);
             }
             res.close();// fechando o resultado

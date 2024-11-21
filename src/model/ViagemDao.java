@@ -43,9 +43,9 @@ public class ViagemDao {
                 Viagem v = new Viagem(result.getInt("trip_id"),
                                       result.getString("origem"),
                                       result.getString("destino"),
-                                      result.getDate("data"),
-                                      result.getTime("saida").toLocalTime(),
-                                      result.getTime("retorno").toLocalTime(),
+                                      result.getString("data"),
+                                      result.getString("saida"),
+                                      result.getString("retorno"),
                                       result.getInt("status_viagem")); 
                 // imprimindo a viagem
                 System.out.println(v);
@@ -77,9 +77,9 @@ public class ViagemDao {
             //substituir os ?
             stmt.setString(1, v.getOrigem());
             stmt.setString(2, v.getDestino());
-            stmt.setString(3, v.getData().toString());
-            stmt.setString(4, v.getSaida().format(DateTimeFormatter.ISO_DATE));
-            stmt.setString(5, v.getRetorno().format(DateTimeFormatter.ISO_DATE));
+            stmt.setString(3, v.getData());
+            stmt.setString(4, v.getSaida());
+            stmt.setString(5, v.getRetorno());
             stmt.setInt(6, v.getStatus_viagem());
             //executar o script
             stmt.execute();
@@ -110,9 +110,9 @@ public class ViagemDao {
             //substituir os ?
             stmt.setString(1, v.getOrigem());
             stmt.setString(2, v.getDestino());
-            stmt.setString(3, v.getData().toString());
-            stmt.setString(4, v.getSaida().format(DateTimeFormatter.ISO_DATE));
-            stmt.setString(5, v.getRetorno().format(DateTimeFormatter.ISO_DATE));
+            stmt.setString(3, v.getData());
+            stmt.setString(4, v.getSaida());
+            stmt.setString(5, v.getRetorno());
             stmt.setInt(6, v.getStatus_viagem());
             stmt.setInt(7, v.getTrip_id());
             //executar o script
@@ -228,9 +228,9 @@ public class ViagemDao {
             if (resultSet.next()) {
                 dadosViagem.put("origem", resultSet.getString("origem"));
                 dadosViagem.put("destino", resultSet.getString("destino"));
-                dadosViagem.put("data", resultSet.getDate("data"));
-                dadosViagem.put("saida", resultSet.getTimestamp("saida"));
-                dadosViagem.put("retorno", resultSet.getTimestamp("retorno"));
+                dadosViagem.put("data", resultSet.getString("data"));
+                dadosViagem.put("saida", resultSet.getString("saida"));
+                dadosViagem.put("retorno", resultSet.getString("retorno"));
                 dadosViagem.put("status_viagem", resultSet.getInt("status_viagem"));
                 dadosViagem.put("condutor", resultSet.getInt("condutor"));
             } else {

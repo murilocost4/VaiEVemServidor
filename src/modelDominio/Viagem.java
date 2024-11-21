@@ -20,13 +20,13 @@ public class Viagem implements Serializable{
     private int trip_id;
     private String origem;
     private String destino;
-    private Date data; 
-    private LocalTime saida;
-    private LocalTime retorno;
+    private String data; 
+    private String saida;
+    private String retorno;
     private int status_viagem;
     
     // usado por selects e updates.
-    public Viagem(int trip_id, String origem, String destino, Date data, LocalTime saida, LocalTime retorno, int status_viagem) {
+    public Viagem(int trip_id, String origem, String destino, String data, String saida, String retorno, int status_viagem) {
         this.trip_id = trip_id;
         this.origem = origem;
         this.destino = destino;
@@ -38,7 +38,7 @@ public class Viagem implements Serializable{
 
  
     // INSERTS
-    public Viagem(String origem, String destino, Date data, LocalTime saida, LocalTime retorno, int status_viagem) {
+    public Viagem(String origem, String destino, String data, String saida, String retorno, int status_viagem) {
         this.origem = origem;
         this.destino = destino;
         this.data = data;
@@ -77,27 +77,27 @@ public class Viagem implements Serializable{
         this.destino = destino;
     }
 
-    public Date getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(String data) {
         this.data = data;
     }
 
-    public LocalTime getSaida() {
+    public String getSaida() {
         return saida;
     }
 
-    public void setSaida(LocalTime saida) {
+    public void setSaida(String saida) {
         this.saida = saida;
     }
 
-    public LocalTime getRetorno() {
+    public String getRetorno() {
         return retorno;
     }
 
-    public void setRetorno(LocalTime retorno) {
+    public void setRetorno(String retorno) {
         this.retorno = retorno;
     }
 
