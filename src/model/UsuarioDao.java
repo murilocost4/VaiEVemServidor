@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+/*aaa*/
 
 import factory.Conector;
 import java.sql.*;
