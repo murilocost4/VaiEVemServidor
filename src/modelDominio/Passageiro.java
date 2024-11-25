@@ -28,4 +28,10 @@ public class Passageiro extends Usuario implements Serializable {
     public Passageiro(int codUsuario) {
         super(codUsuario);
     }
+    
+    public Passageiro(int codUsuario, String nomeUsuario) {
+        super(codUsuario, nomeUsuario);
+    }
+    
+    
 }

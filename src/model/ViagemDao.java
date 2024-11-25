@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import modelDominio.Passageiro;
+import modelDominio.StatusPassageiro;
 import modelDominio.Viagem;
 
 /**
@@ -39,6 +41,19 @@ public class ViagemDao {
             // percorrer o result pegando todos os registros de Viagem
             // enquanto tiver resultado disponível fica dentro do looping
             while(result.next()){
+                ResultSet res = stmt.executeQuery("select * from status_passageiro \n" +
+                                                "join usuario on (usuario.user_id=status_passageiro.passageiro)\n" +
+                                                "where viagem_trip_id="+result.getInt("trip_id"));
+                ArrayList<StatusPassageiro> statusPassageiro = new ArrayList<>();
+                
+                while(res.next()) {
+                    statusPassageiro.add(new StatusPassageiro(res.getInt("passenger_trip_id"), 
+                                                              new Viagem(result.getInt("trip_id")),
+                                                              new Passageiro(res.getInt("passageiro"),res.getString("nome")),
+                                                              res.getInt("status"),
+                                                              res.getTimestamp("hora_atualizacao")));
+                }
+                
                 // criar uma Viagem baseado no registro que estou percorrendo...
                 Viagem v = new Viagem(result.getInt("trip_id"),
                                       result.getString("origem"),
@@ -46,7 +61,9 @@ public class ViagemDao {
                                       result.getString("data"),
                                       result.getString("saida"),
                                       result.getString("retorno"),
-                                      result.getInt("status_viagem")); 
+                                      result.getInt("status_viagem"),
+                                      result.getInt("condutor"),
+                                      statusPassageiro);
                 // imprimindo a viagem
                 System.out.println(v);
                 // adicionando a viagem na lista
@@ -70,7 +87,7 @@ public class ViagemDao {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "insert into viagem (origem, destino, data, saida, retorno, status_viagem) values (?,?,?,?,?,?)";
+            String sql = "insert into viagem (origem, destino, data, saida, retorno, status_viagem, condutor) values (?,?,?,?,?,?,?)";
             //preparar o sql para ser executado pelo preparedStatement
             // preparar -> deixar apto para substituir os ?
             stmt = con.prepareStatement(sql);
@@ -81,6 +98,7 @@ public class ViagemDao {
             stmt.setString(4, v.getSaida());
             stmt.setString(5, v.getRetorno());
             stmt.setInt(6, v.getStatus_viagem());
+            stmt.setInt(7, v.getCodCondutor());
             //executar o script
             stmt.execute();
             // deu tudo certo.
@@ -103,7 +121,7 @@ public class ViagemDao {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "update viagem set destino=?, origem=?, data=?, saida=?, retorno=?, status_viagem=? where trip_id=?";
+            String sql = "update viagem set destino=?, origem=?, data=?, saida=?, retorno=?, status_viagem=?, condutor=? where trip_id=?";
             //preparar o sql para ser executado pelo preparedStatement
             // preparar -> deixar apto para substituir os ?
             stmt = con.prepareStatement(sql);
@@ -114,7 +132,9 @@ public class ViagemDao {
             stmt.setString(4, v.getSaida());
             stmt.setString(5, v.getRetorno());
             stmt.setInt(6, v.getStatus_viagem());
-            stmt.setInt(7, v.getTrip_id());
+            stmt.setInt(7, v.getCodCondutor());
+            stmt.setInt(8, v.getTrip_id());
+            
             //executar o script
             stmt.execute();
             // deu tudo certo.
@@ -232,7 +252,7 @@ public class ViagemDao {
                 dadosViagem.put("saida", resultSet.getString("saida"));
                 dadosViagem.put("retorno", resultSet.getString("retorno"));
                 dadosViagem.put("status_viagem", resultSet.getInt("status_viagem"));
-                dadosViagem.put("condutor", resultSet.getInt("condutor"));
+                dadosViagem.put("codCondutor", resultSet.getInt("condutor"));
             } else {
                 // Caso não encontre a viagem
                 dadosViagem.put("erro", "Viagem não encontrada.");
