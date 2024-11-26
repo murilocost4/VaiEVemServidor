@@ -33,7 +33,7 @@ public class StatusPassageiroDao {
             //substituir os ? do script SQL
             stmt.setInt(1, sp.getStatus());
             stmt.setTimestamp(2, sp.getHoraAtualizacao());
-            stmt.setInt(3, sp.getViagem().getTrip_id());
+            stmt.setInt(3, sp.getViagem());
             stmt.setInt(4, sp.getPassageiro().getCodUsuario());
 
             //executar o SCRIPT SQL

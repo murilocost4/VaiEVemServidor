@@ -15,21 +15,21 @@ public class StatusPassageiro implements Serializable {
     private static final long serialVersionUID = 123456789L;
     
     private int idStatusPassageiro;
-    private Viagem viagem;
+    private int idViagem;
     private Passageiro passageiro;
     private int status;
     private Timestamp horaAtualizacao;
 
-    public StatusPassageiro(int idStatusPassageiro, Viagem viagem, Passageiro passageiro, int status, Timestamp horaAtualizacao) {
+    public StatusPassageiro(int idStatusPassageiro, int idViagem, Passageiro passageiro, int status, Timestamp horaAtualizacao) {
         this.idStatusPassageiro = idStatusPassageiro;
-        this.viagem = viagem;
+        this.idViagem = idViagem;
         this.passageiro = passageiro;
         this.status = status;
         this.horaAtualizacao = horaAtualizacao;
     }
 
-    public StatusPassageiro(Viagem viagem, Passageiro passageiro, int status, Timestamp horaAtualizacao) {
-        this.viagem = viagem;
+    public StatusPassageiro(int idViagem, Passageiro passageiro, int status, Timestamp horaAtualizacao) {
+        this.idViagem = idViagem;
         this.passageiro = passageiro;
         this.status = status;
         this.horaAtualizacao = horaAtualizacao;
@@ -47,12 +47,12 @@ public class StatusPassageiro implements Serializable {
         this.idStatusPassageiro = idStatusPassageiro;
     }
 
-    public Viagem getViagem() {
-        return viagem;
+    public int getViagem() {
+        return idViagem;
     }
 
-    public void setViagem(Viagem viagem) {
-        this.viagem = viagem;
+    public void setViagem(int idViagem) {
+        this.idViagem = idViagem;
     }
 
     public Passageiro getPassageiro() {

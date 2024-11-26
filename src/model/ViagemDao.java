@@ -50,7 +50,7 @@ public class ViagemDao {
                 while (rsStatus.next()) {
                     StatusPassageiro sp = new StatusPassageiro(
                             rsStatus.getInt("passenger_trip_id"),
-                            new Viagem(rsStatus.getInt("viagem_trip_id")),
+                            rsStatus.getInt("viagem_trip_id"),
                             new Passageiro(rsStatus.getInt("passageiro"), rsStatus.getString("nome")),
                             rsStatus.getInt("status"),
                             rsStatus.getTimestamp("hora_atualizacao")
@@ -85,15 +85,15 @@ public class ViagemDao {
     
     // métod que fará INSERT no BANCO
     // devolve boolean para saber se deu certo o insert
-    public boolean inserir(Viagem v){
+    public int inserir(Viagem v){
         PreparedStatement stmtViagem = null;
         boolean result = false;
+        long id = 0;
         try {
-            con.setAutoCommit(false);
             String sqlViagem = "insert into viagem (origem, destino, data, saida, retorno, status_viagem, condutor) values (?,?,?,?,?,?,?)";
             //preparar o sql para ser executado pelo preparedStatement
             // preparar -> deixar apto para substituir os ?
-            stmtViagem = con.prepareStatement(sqlViagem);
+            stmtViagem = con.prepareStatement(sqlViagem, Statement.RETURN_GENERATED_KEYS);
             //substituir os ?
             stmtViagem.setString(1, v.getOrigem());
             stmtViagem.setString(2, v.getDestino());
@@ -103,21 +103,25 @@ public class ViagemDao {
             stmtViagem.setInt(6, v.getStatus_viagem());
             stmtViagem.setInt(7, v.getCodCondutor());          
             //executar o script
-            stmtViagem.executeUpdate();
+            int affectedRows = stmtViagem.executeUpdate();
+            
+            if (affectedRows > 0) {
+                ResultSet generatedKeys = stmtViagem.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    id = generatedKeys.getLong(1);
+                    System.out.println("ID Gerado: "+id);
+                }
+                
+            }
             
             // deu tudo certo.
             result = true;
+            return (int) id;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                stmtViagem.close();
-                con.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
+            return 0;
+        
+    }
     }
     
     // executa um UPDATE na TABELA Viagem do banco
