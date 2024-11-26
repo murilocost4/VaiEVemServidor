@@ -5,9 +5,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import model.StatusPassageiroDao;
 import model.UsuarioDao;
 import model.ViagemDao;
 import modelDominio.Condutor;
+import modelDominio.Passageiro;
+import modelDominio.StatusPassageiro;
 import modelDominio.Usuario;
 import modelDominio.Viagem;
 
@@ -62,6 +65,15 @@ public class TrataClienteController extends Thread {
                     ArrayList<Condutor> listaCondutor = usDao.getListaCondutor();
                     //devolve a lista para o cliente
                     out.writeObject(listaCondutor);
+                }else if (comando.equalsIgnoreCase("PassageiroLista")){
+                    // esse comando irá retornar todos os registros
+                    // que existem na tabela Condutor
+                    // criar objeto de ViagemDao
+                    UsuarioDao usDao = new UsuarioDao();
+                    // chama método getViagemLista() e guarda resultado em listaViagens
+                    ArrayList<Passageiro> listaPassageiro = usDao.getListaPassageiro();
+                    //devolve a lista para o cliente
+                    out.writeObject(listaPassageiro);
                 }else if (comando.equalsIgnoreCase("ViagemLista")){
                     // esse comando irá retornar todos os registros
                     // que existem na tabela Viagem
@@ -140,6 +152,12 @@ public class TrataClienteController extends Thread {
                     ViagemDao vDao = new ViagemDao();
                     out.writeObject(vDao.acompanharViagem(idUnico));
                     
+                }else if (comando.equalsIgnoreCase("statusPassageiroInserir")) {
+                    out.writeObject("ok");
+                    StatusPassageiro sp = (StatusPassageiro) in.readObject();
+                    StatusPassageiroDao spDao = new StatusPassageiroDao();
+                    out.writeObject(spDao.inserir(sp));
+                
                 }else{
                     // comando inválido e não reconhecido
                     out.writeObject("nok"); 

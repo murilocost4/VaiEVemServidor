@@ -29,49 +29,51 @@ public class ViagemDao {
     
     // metodo que irá selecionar todas as viagens
     // select * from Viagem
-    public ArrayList<Viagem> getViagemLista(){
-       Statement stmt = null; // usar para rodar o script SQL
-       // variaável para guardar Viagem selecionadas 
-       ArrayList<Viagem> listaViagens = new ArrayList<>();
-        try {
-            // criando o objeto stmt para rodar o script
-            stmt = con.createStatement();
-            // executar o script
-            ResultSet result = stmt.executeQuery("select * from viagem");
-            // percorrer o result pegando todos os registros de Viagem
-            // enquanto tiver resultado disponível fica dentro do looping
-            while(result.next()){
-                ResultSet res = stmt.executeQuery("select * from status_passageiro \n" +
-                                                "join usuario on (usuario.user_id=status_passageiro.passageiro)\n" +
-                                                "where viagem_trip_id="+result.getInt("trip_id"));
-                ArrayList<StatusPassageiro> statusPassageiro = new ArrayList<>();
-                
-                while(res.next()) {
-                    statusPassageiro.add(new StatusPassageiro(res.getInt("passenger_trip_id"), 
-                                                              new Viagem(result.getInt("trip_id")),
-                                                              new Passageiro(res.getInt("passageiro"),res.getString("nome")),
-                                                              res.getInt("status"),
-                                                              res.getTimestamp("hora_atualizacao")));
+    public ArrayList<Viagem> getViagemLista() {
+    ArrayList<Viagem> listaViagens = new ArrayList<>();
+    
+    String queryViagem = "SELECT * FROM viagem";
+    String queryStatusPassageiro = "SELECT passenger_trip_id, viagem_trip_id, passageiro, status, hora_atualizacao, nome " +
+                                   "FROM status_passageiro sp " +
+                                   "JOIN usuario u ON user_id = passageiro " +
+                                   "WHERE viagem_trip_id = ?";
+
+    try (Statement stmtViagem = con.createStatement();
+         PreparedStatement psStatusPassageiro = con.prepareStatement(queryStatusPassageiro);
+         ResultSet rsViagem = stmtViagem.executeQuery(queryViagem)) {
+
+        while (rsViagem.next()) {
+            ArrayList<StatusPassageiro> statusPassageiroList = new ArrayList<>();
+
+            psStatusPassageiro.setInt(1, rsViagem.getInt("trip_id"));
+            try (ResultSet rsStatus = psStatusPassageiro.executeQuery()) {
+                while (rsStatus.next()) {
+                    StatusPassageiro sp = new StatusPassageiro(
+                            rsStatus.getInt("passenger_trip_id"),
+                            new Viagem(rsStatus.getInt("viagem_trip_id")),
+                            new Passageiro(rsStatus.getInt("passageiro"), rsStatus.getString("nome")),
+                            rsStatus.getInt("status"),
+                            rsStatus.getTimestamp("hora_atualizacao")
+                    );
+                    statusPassageiroList.add(sp);
                 }
-                
-                // criar uma Viagem baseado no registro que estou percorrendo...
-                Viagem v = new Viagem(result.getInt("trip_id"),
-                                      result.getString("origem"),
-                                      result.getString("destino"),
-                                      result.getString("data"),
-                                      result.getString("saida"),
-                                      result.getString("retorno"),
-                                      result.getInt("status_viagem"),
-                                      result.getInt("condutor"),
-                                      statusPassageiro);
-                // imprimindo a viagem
-                System.out.println(v);
-                // adicionando a viagem na lista
-                listaViagens.add(v);
             }
+
+            Viagem viagem = new Viagem(
+                    rsViagem.getInt("trip_id"),
+                    rsViagem.getString("origem"),
+                    rsViagem.getString("destino"),
+                    rsViagem.getString("data"),
+                    rsViagem.getString("saida"),
+                    rsViagem.getString("retorno"),
+                    rsViagem.getInt("status_viagem"),
+                    rsViagem.getInt("condutor"),
+                    statusPassageiroList
+            );
+
+            listaViagens.add(viagem);
+        }
             //fechando stmts e conexões
-            result.close();
-            stmt.close();
             con.close();
             return listaViagens;
         } catch (Exception e) {
@@ -84,30 +86,32 @@ public class ViagemDao {
     // métod que fará INSERT no BANCO
     // devolve boolean para saber se deu certo o insert
     public boolean inserir(Viagem v){
-        PreparedStatement stmt = null;
+        PreparedStatement stmtViagem = null;
         boolean result = false;
         try {
-            String sql = "insert into viagem (origem, destino, data, saida, retorno, status_viagem, condutor) values (?,?,?,?,?,?,?)";
+            con.setAutoCommit(false);
+            String sqlViagem = "insert into viagem (origem, destino, data, saida, retorno, status_viagem, condutor) values (?,?,?,?,?,?,?)";
             //preparar o sql para ser executado pelo preparedStatement
             // preparar -> deixar apto para substituir os ?
-            stmt = con.prepareStatement(sql);
+            stmtViagem = con.prepareStatement(sqlViagem);
             //substituir os ?
-            stmt.setString(1, v.getOrigem());
-            stmt.setString(2, v.getDestino());
-            stmt.setString(3, v.getData());
-            stmt.setString(4, v.getSaida());
-            stmt.setString(5, v.getRetorno());
-            stmt.setInt(6, v.getStatus_viagem());
-            stmt.setInt(7, v.getCodCondutor());
+            stmtViagem.setString(1, v.getOrigem());
+            stmtViagem.setString(2, v.getDestino());
+            stmtViagem.setString(3, v.getData());
+            stmtViagem.setString(4, v.getSaida());
+            stmtViagem.setString(5, v.getRetorno());
+            stmtViagem.setInt(6, v.getStatus_viagem());
+            stmtViagem.setInt(7, v.getCodCondutor());          
             //executar o script
-            stmt.execute();
+            stmtViagem.executeUpdate();
+            
             // deu tudo certo.
             result = true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
-                stmt.close();
+                stmtViagem.close();
                 con.close();
             } catch (Exception e) {
                 e.printStackTrace();

@@ -307,6 +307,40 @@ public class UsuarioDao {
         
     }
     
+    public ArrayList<Passageiro> getListaPassageiro() {
+        Statement stmt = null; // usado para rodar SQL
+        ArrayList<Passageiro> listaPassageiro = new ArrayList<Passageiro>();
+
+        try {
+            // cria o objeto para rodar o SQL
+            stmt = con.createStatement();
+            // passando a string SQL que faz o SELECT
+            ResultSet res = stmt.executeQuery("select * from usuario where tipo = 3");
+
+            // Pebkorrendo o resultado - res
+            while (res.next()) {
+                Passageiro pas;
+                pas = new Passageiro(res.getInt("user_id"),
+                            res.getString("nome"),
+                            res.getString("cpf"),
+                            res.getString("nascimento"),
+                            res.getString("endereco"),
+                            res.getString("fone"),
+                            res.getString("email"),
+                            res.getString("senha"));
+                listaPassageiro.add(pas);
+            }
+            res.close();// fechando o resultado
+            stmt.close();// fechando statment
+            con.close(); // fechando conexão com o banco
+            return listaPassageiro; // retornando a lista de gastomensals
+        } catch (SQLException e) {
+            System.out.println(e.getErrorCode() + "-" + e.getMessage());
+            return null;
+        }
+        
+    }
+    
     
     
 }
