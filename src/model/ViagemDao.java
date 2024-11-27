@@ -129,7 +129,7 @@ public class ViagemDao {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "update viagem set destino=?, origem=?, data=?, saida=?, retorno=?, status_viagem=?, condutor=? where trip_id=?";
+            String sql = "update viagem set origem=?, destino=?, data=?, saida=?, retorno=?, status_viagem=?, condutor=? where trip_id=?";
             //preparar o sql para ser executado pelo preparedStatement
             // preparar -> deixar apto para substituir os ?
             stmt = con.prepareStatement(sql);
