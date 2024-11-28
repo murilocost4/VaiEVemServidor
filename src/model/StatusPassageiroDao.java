@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import modelDominio.Admin;
 import modelDominio.Condutor;
 import modelDominio.StatusPassageiro;
+import modelDominio.Viagem;
 /**
  *
  * @author mariana
@@ -40,6 +41,34 @@ public class StatusPassageiroDao {
             stmt.execute();
             //efetivar a transação
             con.commit();
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+                con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+    
+    public boolean excluirDaViagem(Viagem v){
+        PreparedStatement stmt = null;
+        boolean result = false;
+        try {
+            String sql = "delete from status_passageiro where viagem_trip_id=?";
+                    
+            //preparar o sql para ser executado pelo preparedStatement
+            // preparar -> deixar apto para substituir os ?
+            stmt = con.prepareStatement(sql);
+            //substituir os ?
+            stmt.setInt(1, v.getTrip_id());
+            //executar o script
+            stmt.execute();
+            // deu tudo certo.
             result = true;
         } catch (Exception e) {
             e.printStackTrace();

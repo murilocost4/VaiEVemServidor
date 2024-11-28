@@ -166,6 +166,7 @@ public class ViagemDao {
         boolean result = false;
         try {
             String sql = "delete from viagem where trip_id=?";
+                    
             //preparar o sql para ser executado pelo preparedStatement
             // preparar -> deixar apto para substituir os ?
             stmt = con.prepareStatement(sql);
