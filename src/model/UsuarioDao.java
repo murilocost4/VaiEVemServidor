@@ -54,30 +54,30 @@ public class UsuarioDao {
                     usuarioSelecionado = new Admin(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getString("nascimento"),
+                            res.getDate("nascimento"),
                             res.getString("endereco"),
-                            res.getString("fone"),
                             res.getString("email"),
-                            res.getString("senha"));
+                            res.getString("senha"),
+                            res.getString("fone"));
                 } else if (res.getInt("tipo") == 2) {
                     // é condutor
                     usuarioSelecionado = new Condutor(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getString("nascimento"),
+                            res.getDate("nascimento"),
                             res.getString("endereco"),
-                            res.getString("fone"),
                             res.getString("email"),
-                            res.getString("senha"));
+                            res.getString("senha"),
+                            res.getString("fone"));
                 } else {
                     usuarioSelecionado = new Passageiro(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getString("nascimento"),
+                            res.getDate("nascimento"),
                             res.getString("endereco"),
-                            res.getString("fone"),
                             res.getString("email"),
-                            res.getString("senha"));
+                            res.getString("senha"),
+                            res.getString("fone"));
                 }
             }
             // fechar tudo
@@ -106,7 +106,8 @@ public class UsuarioDao {
             //substituir os ? do script SQL
             stmt.setString(1, usr.getNomeUsuario());
             stmt.setString(2, usr.getCpf());
-            stmt.setString(3, usr.getNascimento());
+            java.sql.Date sqlDate = new java.sql.Date(usr.getNascimento().getTime());
+            stmt.setDate(3, sqlDate);
             stmt.setString(4, usr.getEndereco());
             stmt.setString(5, usr.getFone());
             stmt.setString(6, usr.getEmail());
@@ -159,7 +160,7 @@ public class UsuarioDao {
             //substituir os ? do script SQL
             stmt.setString(1, usr.getNomeUsuario());
             stmt.setString(2, usr.getCpf());
-            stmt.setString(3, usr.getNascimento());
+            stmt.setDate(3, (Date) usr.getNascimento());
             stmt.setString(4, usr.getEndereco());
             stmt.setString(5, usr.getFone());
             stmt.setString(6, usr.getEmail());
@@ -244,7 +245,7 @@ public class UsuarioDao {
             int id = res.getInt("user_id");
             String nome = res.getString("nome");
             String cpf = res.getString("cpf");
-            String nascimento = res.getString("nascimento");
+            Date nascimento = res.getDate("nascimento");
             String endereco = res.getString("endereco");
             String fone = res.getString("fone");
             String email = res.getString("email");
@@ -252,11 +253,11 @@ public class UsuarioDao {
 
             // Construção baseada no tipo
             if (tipo == 1) {
-                usr = new Admin(id, nome, cpf, nascimento, endereco, fone, email, senha);
+                usr = new Admin(id, nome, cpf, nascimento, endereco, email, senha, fone);
             } else if (tipo == 2) {
-                usr = new Condutor(id, nome, cpf, nascimento, endereco, fone, email, senha);
+                usr = new Condutor(id, nome, cpf, nascimento, endereco, email, senha, fone);
             } else {
-                usr = new Passageiro(id, nome, cpf, nascimento, endereco, fone, email, senha);
+                usr = new Passageiro(id, nome, cpf, nascimento, endereco, email, senha, fone);
             }
 
                 // adicionando na lista auxiliar
@@ -289,11 +290,11 @@ public class UsuarioDao {
                 cond = new Condutor(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getString("nascimento"),
+                            res.getDate("nascimento"),
                             res.getString("endereco"),
-                            res.getString("fone"),
                             res.getString("email"),
-                            res.getString("senha"));
+                            res.getString("senha"),
+                            res.getString("fone"));
                 listaCondutor.add(cond);
             }
             res.close();// fechando o resultado
@@ -323,11 +324,11 @@ public class UsuarioDao {
                 pas = new Passageiro(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getString("nascimento"),
+                            res.getDate("nascimento"),
                             res.getString("endereco"),
-                            res.getString("fone"),
                             res.getString("email"),
-                            res.getString("senha"));
+                            res.getString("senha"),
+                            res.getString("fone"));
                 listaPassageiro.add(pas);
             }
             res.close();// fechando o resultado

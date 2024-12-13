@@ -164,6 +164,12 @@ public class TrataClienteController extends Thread {
                     StatusPassageiroDao spDao = new StatusPassageiroDao();
                     out.writeObject(spDao.excluirDaViagem(v));
                 
+                }else if (comando.equalsIgnoreCase("excluirStatusPassageiro")) {
+                    out.writeObject("ok");
+                    StatusPassageiro sp = (StatusPassageiro) in.readObject();
+                    StatusPassageiroDao spDao = new StatusPassageiroDao();
+                    out.writeObject(spDao.excluir(sp));
+                
                 }else{
                     // comando inválido e não reconhecido
                     out.writeObject("nok"); 

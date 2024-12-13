@@ -5,6 +5,7 @@
 package modelDominio;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
@@ -16,13 +17,13 @@ public class Usuario implements Serializable {
     private int codUsuario;
     private String nomeUsuario;
     private String cpf;
-    private String nascimento;
+    private Date nascimento;
     private String endereco;
     private String senha;
     private String email;
     private String fone;
 
-    public Usuario(int codUsuario, String nomeUsuario, String cpf, String nascimento, String endereco, String senha, String email, String fone) {
+    public Usuario(int codUsuario, String nomeUsuario, String cpf, Date nascimento, String endereco, String senha, String email, String fone) {
         this.codUsuario = codUsuario;
         this.nomeUsuario = nomeUsuario;
         this.cpf = cpf;
@@ -33,7 +34,7 @@ public class Usuario implements Serializable {
         this.fone = fone;
     }
 
-    public Usuario(String nomeUsuario, String cpf, String nascimento, String endereco, String senha, String email, String fone) {
+    public Usuario(String nomeUsuario, String cpf, Date nascimento, String endereco, String senha, String email, String fone) {
         this.nomeUsuario = nomeUsuario;
         this.cpf = cpf;
         this.nascimento = nascimento;
@@ -81,11 +82,11 @@ public class Usuario implements Serializable {
         this.cpf = cpf;
     }
 
-    public String getNascimento() {
+    public Date getNascimento() {
         return nascimento;
     }
 
-    public void setNascimento(String nascimento) {
+    public void setNascimento(Date nascimento) {
         this.nascimento = nascimento;
     }
 
