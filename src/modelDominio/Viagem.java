@@ -5,7 +5,6 @@
 package modelDominio;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -23,15 +22,15 @@ public class Viagem implements Serializable{
     private int trip_id;
     private String origem;
     private String destino;
-    private Date data; 
-    private Timestamp saida;
-    private Timestamp retorno;
+    private String data; 
+    private String saida;
+    private String retorno;
     private int status_viagem;
     private int codCondutor;
     private List<StatusPassageiro> statusPassageiro;
     
     // usado por selects e updates.
-    public Viagem(int trip_id, String origem, String destino, Date data, Timestamp saida, Timestamp retorno, int status_viagem, int codCondutor, List<StatusPassageiro> statusPassageiro) {
+    public Viagem(int trip_id, String origem, String destino, String data, String saida, String retorno, int status_viagem, int codCondutor, List<StatusPassageiro> statusPassageiro) {
         this.trip_id = trip_id;
         this.origem = origem;
         this.destino = destino;
@@ -45,7 +44,7 @@ public class Viagem implements Serializable{
 
  
     // INSERTS
-    public Viagem(String origem, String destino, Date data, Timestamp saida, Timestamp retorno, int status_viagem, int codCondutor) {
+    public Viagem(String origem, String destino, String data, String saida, String retorno, int status_viagem, int codCondutor) {
         this.origem = origem;
         this.destino = destino;
         this.data = data;
@@ -86,27 +85,27 @@ public class Viagem implements Serializable{
         this.destino = destino;
     }
 
-    public Date getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(String data) {
         this.data = data;
     }
 
-    public Timestamp getSaida() {
+    public String getSaida() {
         return saida;
     }
 
-    public void setSaida(Timestamp saida) {
+    public void setSaida(String saida) {
         this.saida = saida;
     }
 
-    public Timestamp getRetorno() {
+    public String getRetorno() {
         return retorno;
     }
 
-    public void setRetorno(Timestamp retorno) {
+    public void setRetorno(String retorno) {
         this.retorno = retorno;
     }
 

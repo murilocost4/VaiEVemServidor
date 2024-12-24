@@ -54,7 +54,7 @@ public class UsuarioDao {
                     usuarioSelecionado = new Admin(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getDate("nascimento"),
+                            res.getString("nascimento"),
                             res.getString("endereco"),
                             res.getString("email"),
                             res.getString("senha"),
@@ -64,7 +64,7 @@ public class UsuarioDao {
                     usuarioSelecionado = new Condutor(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getDate("nascimento"),
+                            res.getString("nascimento"),
                             res.getString("endereco"),
                             res.getString("email"),
                             res.getString("senha"),
@@ -73,7 +73,7 @@ public class UsuarioDao {
                     usuarioSelecionado = new Passageiro(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getDate("nascimento"),
+                            res.getString("nascimento"),
                             res.getString("endereco"),
                             res.getString("email"),
                             res.getString("senha"),
@@ -106,8 +106,7 @@ public class UsuarioDao {
             //substituir os ? do script SQL
             stmt.setString(1, usr.getNomeUsuario());
             stmt.setString(2, usr.getCpf());
-            java.sql.Date sqlDate = new java.sql.Date(usr.getNascimento().getTime());
-            stmt.setDate(3, sqlDate);
+            stmt.setString(3, usr.getNascimento());
             stmt.setString(4, usr.getEndereco());
             stmt.setString(5, usr.getFone());
             stmt.setString(6, usr.getEmail());
@@ -160,7 +159,7 @@ public class UsuarioDao {
             //substituir os ? do script SQL
             stmt.setString(1, usr.getNomeUsuario());
             stmt.setString(2, usr.getCpf());
-            stmt.setDate(3, (Date) usr.getNascimento());
+            stmt.setString(3, usr.getNascimento());
             stmt.setString(4, usr.getEndereco());
             stmt.setString(5, usr.getFone());
             stmt.setString(6, usr.getEmail());
@@ -245,7 +244,7 @@ public class UsuarioDao {
             int id = res.getInt("user_id");
             String nome = res.getString("nome");
             String cpf = res.getString("cpf");
-            Date nascimento = res.getDate("nascimento");
+            String nascimento = res.getString("nascimento");
             String endereco = res.getString("endereco");
             String fone = res.getString("fone");
             String email = res.getString("email");
@@ -290,7 +289,7 @@ public class UsuarioDao {
                 cond = new Condutor(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getDate("nascimento"),
+                            res.getString("nascimento"),
                             res.getString("endereco"),
                             res.getString("email"),
                             res.getString("senha"),
@@ -324,7 +323,7 @@ public class UsuarioDao {
                 pas = new Passageiro(res.getInt("user_id"),
                             res.getString("nome"),
                             res.getString("cpf"),
-                            res.getDate("nascimento"),
+                            res.getString("nascimento"),
                             res.getString("endereco"),
                             res.getString("email"),
                             res.getString("senha"),

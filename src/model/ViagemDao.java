@@ -63,9 +63,9 @@ public class ViagemDao {
                     rsViagem.getInt("trip_id"),
                     rsViagem.getString("origem"),
                     rsViagem.getString("destino"),
-                    rsViagem.getDate("data"),
-                    rsViagem.getTimestamp("saida"),
-                    rsViagem.getTimestamp("retorno"),
+                    rsViagem.getString("data"),
+                    rsViagem.getString("saida"),
+                    rsViagem.getString("retorno"),
                     rsViagem.getInt("status_viagem"),
                     rsViagem.getInt("condutor"),
                     statusPassageiroList
@@ -97,9 +97,9 @@ public class ViagemDao {
             //substituir os ?
             stmtViagem.setString(1, v.getOrigem());
             stmtViagem.setString(2, v.getDestino());
-            stmtViagem.setDate (3, (java.sql.Date) v.getData());
-            stmtViagem.setTimestamp(4, v.getSaida());
-            stmtViagem.setTimestamp(5, v.getRetorno());
+            stmtViagem.setString (3,v.getData());
+            stmtViagem.setString(4, v.getSaida());
+            stmtViagem.setString(5, v.getRetorno());
             stmtViagem.setInt(6, v.getStatus_viagem());
             stmtViagem.setInt(7, v.getCodCondutor());          
             //executar o script
@@ -136,9 +136,9 @@ public class ViagemDao {
             //substituir os ?
             stmt.setString(1, v.getOrigem());
             stmt.setString(2, v.getDestino());
-            stmt.setDate (3, (java.sql.Date) v.getData());
-            stmt.setTimestamp(4, v.getSaida());
-            stmt.setTimestamp(5, v.getRetorno());
+            stmt.setString (3, v.getData());
+            stmt.setString(4, v.getSaida());
+            stmt.setString(5, v.getRetorno());
             stmt.setInt(6, v.getStatus_viagem());
             stmt.setInt(7, v.getCodCondutor());
             stmt.setInt(8, v.getTrip_id());
