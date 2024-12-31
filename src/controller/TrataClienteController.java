@@ -83,6 +83,16 @@ public class TrataClienteController extends Thread {
                     ArrayList<Viagem> listaViagens = vDao.getViagemLista();
                     //devolve a lista para o cliente
                     out.writeObject(listaViagens);
+                }else if (comando.equalsIgnoreCase("ViagemCondutorLista")){
+                    // esse comando irá retornar todos os registros
+                    // que existem na tabela Viagem
+                    // criar objeto de ViagemDao
+                    ViagemDao vDao = new ViagemDao();
+                    int codCondutor = (int) in.read();
+                    // chama método getViagemLista() e guarda resultado em listaViagens
+                    ArrayList<Viagem> listaViagens = vDao.getViagemCondutor(codCondutor);
+                    //devolve a lista para o cliente
+                    out.writeObject(listaViagens);
                 }else if (comando.equalsIgnoreCase("ViagemInserir")){
                     // comando parar inserir em Viagem
                     out.writeObject("ok"); // envia ok para clinte
@@ -169,6 +179,24 @@ public class TrataClienteController extends Thread {
                     StatusPassageiro sp = (StatusPassageiro) in.readObject();
                     StatusPassageiroDao spDao = new StatusPassageiroDao();
                     out.writeObject(spDao.excluir(sp));
+                
+                }else if (comando.equalsIgnoreCase("acompanharViagem")) {
+                    out.writeObject("ok");
+                    int idViagem = (int) in.readObject();
+                    ViagemDao vDao = new ViagemDao();
+                    out.writeObject(vDao.acompanharViagem(idViagem));
+                
+                }else if (comando.equalsIgnoreCase("selecionaEmbarcou")) {
+                    out.writeObject("ok");
+                    StatusPassageiro sp = (StatusPassageiro) in.readObject();
+                    StatusPassageiroDao spDao = new StatusPassageiroDao();
+                    out.writeObject(spDao.selecionaEmbarcou(sp));
+                
+                }else if (comando.equalsIgnoreCase("selecionaAusente")) {
+                    out.writeObject("ok");
+                    StatusPassageiro sp = (StatusPassageiro) in.readObject();
+                    StatusPassageiroDao spDao = new StatusPassageiroDao();
+                    out.writeObject(spDao.selecionaAusente(sp));
                 
                 }else{
                     // comando inválido e não reconhecido

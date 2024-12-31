@@ -168,6 +168,62 @@ public class StatusPassageiroDao {
             return result;
         }
     }
+    
+    public boolean selecionaEmbarcou(StatusPassageiro sp){
+        PreparedStatement stmt = null;
+        boolean result = false;
+        try {
+            String sql = "update status_passageiro set status=2 where passenger_trip_id=?";
+                    
+            //preparar o sql para ser executado pelo preparedStatement
+            // preparar -> deixar apto para substituir os ?
+            stmt = con.prepareStatement(sql);
+            //substituir os ?
+            stmt.setInt(1, sp.getIdStatusPassageiro());
+            //executar o script
+            stmt.execute();
+            // deu tudo certo.
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+                con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+    
+    public boolean selecionaAusente(StatusPassageiro sp){
+        PreparedStatement stmt = null;
+        boolean result = false;
+        try {
+            String sql = "update status_passageiro set status=3 where passenger_trip_id=?";
+                    
+            //preparar o sql para ser executado pelo preparedStatement
+            // preparar -> deixar apto para substituir os ?
+            stmt = con.prepareStatement(sql);
+            //substituir os ?
+            stmt.setInt(1, sp.getIdStatusPassageiro());
+            //executar o script
+            stmt.execute();
+            // deu tudo certo.
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+                con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
 }
 
 

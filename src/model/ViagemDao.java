@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JOptionPane;
 import modelDominio.Passageiro;
 import modelDominio.StatusPassageiro;
 import modelDominio.Viagem;
@@ -82,6 +83,63 @@ public class ViagemDao {
             return null;
         }
     }
+    
+    public ArrayList<Viagem> getViagemCondutor(int codCondutor) {
+    ArrayList<Viagem> listaViagens = new ArrayList<>();
+
+    String queryViagem = "SELECT * FROM viagem WHERE condutor = ?";
+    String queryStatusPassageiro = "SELECT passenger_trip_id, viagem_trip_id, passageiro, status, hora_atualizacao, nome " +
+                                   "FROM status_passageiro sp " +
+                                   "JOIN usuario u ON user_id = passageiro " +
+                                   "WHERE viagem_trip_id = ?";
+
+    try (PreparedStatement psViagem = con.prepareStatement(queryViagem);
+         PreparedStatement psStatusPassageiro = con.prepareStatement(queryStatusPassageiro)) {
+
+        // Configurando o código do condutor no PreparedStatement
+        psViagem.setInt(1, codCondutor);
+
+        try (ResultSet rsViagem = psViagem.executeQuery()) {
+            while (rsViagem.next()) {
+                ArrayList<StatusPassageiro> statusPassageiroList = new ArrayList<>();
+
+                psStatusPassageiro.setInt(1, rsViagem.getInt("trip_id"));
+                try (ResultSet rsStatus = psStatusPassageiro.executeQuery()) {
+                    while (rsStatus.next()) {
+                        StatusPassageiro sp = new StatusPassageiro(
+                                rsStatus.getInt("passenger_trip_id"),
+                                rsStatus.getInt("viagem_trip_id"),
+                                new Passageiro(rsStatus.getInt("passageiro"), rsStatus.getString("nome")),
+                                rsStatus.getInt("status"),
+                                rsStatus.getTimestamp("hora_atualizacao")
+                        );
+                        statusPassageiroList.add(sp);
+                    }
+                }
+
+                Viagem viagem = new Viagem(
+                        rsViagem.getInt("trip_id"),
+                        rsViagem.getString("origem"),
+                        rsViagem.getString("destino"),
+                        rsViagem.getString("data"),
+                        rsViagem.getString("saida"),
+                        rsViagem.getString("retorno"),
+                        rsViagem.getInt("status_viagem"),
+                        rsViagem.getInt("condutor"),
+                        statusPassageiroList
+                );
+
+                listaViagens.add(viagem);
+            }
+        }
+
+        return listaViagens;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
     
     // métod que fará INSERT no BANCO
     // devolve boolean para saber se deu certo o insert
@@ -233,47 +291,72 @@ public class ViagemDao {
         } 
     }
     
-    public Map<String, Object> acompanharViagem(int idViagem) {
+    public Viagem acompanharViagem(int idViagem) {
         // SQL para recuperar as informações da viagem
-        String sql = "SELECT origem, destino, data, saida, retorno, status_viagem, condutor " +
+        String sql = "SELECT * " +
                      "FROM viagem WHERE trip_id = ?";
+        String queryStatusPassageiro = "SELECT passenger_trip_id, viagem_trip_id, passageiro, status, hora_atualizacao, nome " +
+                                   "FROM status_passageiro sp " +
+                                   "JOIN usuario u ON user_id = passageiro " +
+                                   "WHERE viagem_trip_id = ?";
 
         // Variáveis para conexão e resultado
-        PreparedStatement preparedStatement = null;
+        PreparedStatement stmtViagem = null;
+        PreparedStatement stmtStatusPassageiro = null;
         ResultSet resultSet = null;
-        Map<String, Object> dadosViagem = new HashMap<>();
+        Viagem viagem = null;
 
         try {
             // Obter conexão com o banco de dados
 
             // Preparar a consulta
-            preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setInt(1, idViagem); // Passar o id da viagem como parâmetro
+            stmtViagem = con.prepareStatement(sql);
+            stmtStatusPassageiro = con.prepareStatement(queryStatusPassageiro);
+            stmtViagem.setInt(1, idViagem); // Passar o id da viagem como parâmetro
+            stmtStatusPassageiro.setInt(1, idViagem); // Passar o id da viagem como parâmetro
 
             // Executar a consulta
-            resultSet = preparedStatement.executeQuery();
+            resultSet = stmtViagem.executeQuery();
+            
+            ArrayList<StatusPassageiro> statusPassageiroList = new ArrayList<>();
+
+            stmtStatusPassageiro.setInt(1, idViagem);
+            try (ResultSet rsStatus = stmtStatusPassageiro.executeQuery()) {
+                while (rsStatus.next()) {
+                    StatusPassageiro sp = new StatusPassageiro(
+                            rsStatus.getInt("passenger_trip_id"),
+                            rsStatus.getInt("viagem_trip_id"),
+                            new Passageiro(rsStatus.getInt("passageiro"), rsStatus.getString("nome")),
+                            rsStatus.getInt("status"),
+                            rsStatus.getTimestamp("hora_atualizacao")
+                    );
+                    statusPassageiroList.add(sp);
+                }
+            }
 
             // Verificar se encontrou dados para a viagem
-            if (resultSet.next()) {
-                dadosViagem.put("origem", resultSet.getString("origem"));
-                dadosViagem.put("destino", resultSet.getString("destino"));
-                dadosViagem.put("data", resultSet.getString("data"));
-                dadosViagem.put("saida", resultSet.getString("saida"));
-                dadosViagem.put("retorno", resultSet.getString("retorno"));
-                dadosViagem.put("status_viagem", resultSet.getInt("status_viagem"));
-                dadosViagem.put("codCondutor", resultSet.getInt("condutor"));
-            } else {
-                // Caso não encontre a viagem
-                dadosViagem.put("erro", "Viagem não encontrada.");
-            }
+
+                viagem = new Viagem(
+                    resultSet.getInt("trip_id"),
+                    resultSet.getString("origem"),
+                    resultSet.getString("destino"),
+                    resultSet.getString("data"),
+                    resultSet.getString("saida"),
+                    resultSet.getString("retorno"),
+                    resultSet.getInt("status_viagem"),
+                    resultSet.getInt("condutor"),
+                    statusPassageiroList
+                );
+
+                
         } catch (SQLException e) {
             // Lidar com erros de SQL
             e.printStackTrace();
-            dadosViagem.put("erro", "Erro ao acessar os dados da viagem.");
         } finally {
             // Fechar recursos
             try {
-                preparedStatement.close();
+                stmtViagem.close();
+                stmtStatusPassageiro.close();
                 con.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -281,7 +364,7 @@ public class ViagemDao {
             
         }
 
-        return dadosViagem;
+        return viagem;
     }
     
 }
