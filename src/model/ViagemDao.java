@@ -84,7 +84,7 @@ public class ViagemDao {
         }
     }
     
-    public ArrayList<Viagem> getViagemCondutor(int codCondutor) {
+   public ArrayList<Viagem> getViagemCondutor(int codCondutor) {
     ArrayList<Viagem> listaViagens = new ArrayList<>();
 
     String queryViagem = "SELECT * FROM viagem WHERE condutor = ?";
@@ -95,21 +95,25 @@ public class ViagemDao {
 
     try (PreparedStatement psViagem = con.prepareStatement(queryViagem);
          PreparedStatement psStatusPassageiro = con.prepareStatement(queryStatusPassageiro)) {
-
-        // Configurando o código do condutor no PreparedStatement
+        
+        // Configurando o parâmetro do condutor
         psViagem.setInt(1, codCondutor);
-
+        
         try (ResultSet rsViagem = psViagem.executeQuery()) {
             while (rsViagem.next()) {
                 ArrayList<StatusPassageiro> statusPassageiroList = new ArrayList<>();
-
+                
+                // Configurando o parâmetro para buscar status dos passageiros
                 psStatusPassageiro.setInt(1, rsViagem.getInt("trip_id"));
                 try (ResultSet rsStatus = psStatusPassageiro.executeQuery()) {
                     while (rsStatus.next()) {
                         StatusPassageiro sp = new StatusPassageiro(
                                 rsStatus.getInt("passenger_trip_id"),
                                 rsStatus.getInt("viagem_trip_id"),
-                                new Passageiro(rsStatus.getInt("passageiro"), rsStatus.getString("nome")),
+                                new Passageiro(
+                                        rsStatus.getInt("passageiro"), 
+                                        rsStatus.getString("nome")
+                                ),
                                 rsStatus.getInt("status"),
                                 rsStatus.getTimestamp("hora_atualizacao")
                         );
@@ -117,6 +121,7 @@ public class ViagemDao {
                     }
                 }
 
+                // Criando o objeto Viagem
                 Viagem viagem = new Viagem(
                         rsViagem.getInt("trip_id"),
                         rsViagem.getString("origem"),
@@ -133,12 +138,15 @@ public class ViagemDao {
             }
         }
 
-        return listaViagens;
     } catch (Exception e) {
         e.printStackTrace();
-        return null;
+        return null; // Retorna null em caso de erro
     }
+    
+    return listaViagens; // Retorna a lista de viagens
 }
+
+
 
     
     // métod que fará INSERT no BANCO

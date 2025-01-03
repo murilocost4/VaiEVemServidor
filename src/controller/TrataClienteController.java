@@ -84,14 +84,10 @@ public class TrataClienteController extends Thread {
                     //devolve a lista para o cliente
                     out.writeObject(listaViagens);
                 }else if (comando.equalsIgnoreCase("ViagemCondutorLista")){
-                    // esse comando irá retornar todos os registros
-                    // que existem na tabela Viagem
-                    // criar objeto de ViagemDao
+                    out.writeObject("ok");
+                    int codCondutor = (int) in.readInt();
                     ViagemDao vDao = new ViagemDao();
-                    int codCondutor = (int) in.read();
-                    // chama método getViagemLista() e guarda resultado em listaViagens
                     ArrayList<Viagem> listaViagens = vDao.getViagemCondutor(codCondutor);
-                    //devolve a lista para o cliente
                     out.writeObject(listaViagens);
                 }else if (comando.equalsIgnoreCase("ViagemInserir")){
                     // comando parar inserir em Viagem
