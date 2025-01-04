@@ -74,6 +74,17 @@ public class TrataClienteController extends Thread {
                     ArrayList<Passageiro> listaPassageiro = usDao.getListaPassageiro();
                     //devolve a lista para o cliente
                     out.writeObject(listaPassageiro);
+                }else if (comando.equalsIgnoreCase("StatusPassageiroLista")){
+                    out.writeObject("ok");
+                    int viagemId = (int) in.readInt();
+                    // esse comando irá retornar todos os registros
+                    // que existem na tabela Condutor
+                    // criar objeto de ViagemDao
+                    StatusPassageiroDao spDao = new StatusPassageiroDao();
+                    // chama método getViagemLista() e guarda resultado em listaViagens
+                    ArrayList<StatusPassageiro> listasp = spDao.getListaSp(viagemId);
+                    //devolve a lista para o cliente
+                    out.writeObject(listasp);
                 }else if (comando.equalsIgnoreCase("ViagemLista")){
                     // esse comando irá retornar todos os registros
                     // que existem na tabela Viagem

@@ -1,13 +1,18 @@
 package model;
 
 import factory.Conector;
+import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import modelDominio.Admin;
 import modelDominio.Condutor;
 import modelDominio.Passageiro;
 import modelDominio.StatusPassageiro;
+import modelDominio.Usuario;
 import modelDominio.Viagem;
 /**
  *
@@ -223,6 +228,50 @@ public class StatusPassageiroDao {
             }
             return result;
         }
+    }
+    
+    public ArrayList<StatusPassageiro> getListaSp(int codViagem) {
+        ArrayList<StatusPassageiro> listasp = new ArrayList<StatusPassageiro>();
+        
+        String query = "select * from status_passageiro where viagem_trip_id = ?";
+
+        try {
+            // cria o objeto para rodar o SQL
+            PreparedStatement stmt = con.prepareStatement(query);
+            // passando a string SQL que faz o SELECT
+            stmt.setInt(1, codViagem);
+            
+            try (ResultSet res = stmt.executeQuery()) {
+                while (res.next()) {
+            StatusPassageiro sp;
+
+            // Extração de dados comuns
+            int id = res.getInt("passenger_trip_id");
+            int status = res.getInt("status");
+            java.sql.Timestamp hora = res.getTimestamp("hora_atualizacao");
+            int viagem_trip_id = res.getInt("viagem_trip_id");
+            Passageiro passageiro = new Passageiro(res.getInt("passageiro"));
+
+            // Construção baseada no tipo
+           
+            sp = new StatusPassageiro(id, viagem_trip_id, passageiro, status, hora);
+            
+
+                // adicionando na lista auxiliar
+                listasp.add(sp);
+            }
+            // Pebkorrendo o resultado - res
+            res.close();// fechando o resultado
+            }
+            
+            stmt.close();// fechando statment
+            con.close(); // fechando conexão com o banco
+            return listasp; // retornando a lista de gastomensals
+        } catch (SQLException e) {
+            System.out.println(e.getErrorCode() + "-" + e.getMessage());
+            return null;
+        }
+        
     }
 }
 
