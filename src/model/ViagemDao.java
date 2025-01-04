@@ -259,11 +259,14 @@ public class ViagemDao {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "update viagem set status_viagem=2 where trip_id=?";
+            String sql = "UPDATE viagem SET status_viagem = 1 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
             stmt.setInt(1, v.getTrip_id());
-            stmt.execute();
-            result = true;
+            int rowsAffected = stmt.executeUpdate();
+        
+        if (rowsAffected > 0) {
+            result = true;  // A atualização foi bem-sucedida
+        }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -281,11 +284,14 @@ public class ViagemDao {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "update viagem set status_viagem=3 where trip_id=?";
+            String sql = "UPDATE viagem SET status_viagem = 2 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
             stmt.setInt(1, v.getTrip_id());
-            stmt.execute();
-            result = true;
+            int rowsAffected = stmt.executeUpdate();
+        
+        if (rowsAffected > 0) {
+            result = true;  // A atualização foi bem-sucedida
+        }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
