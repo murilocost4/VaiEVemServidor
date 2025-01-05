@@ -154,12 +154,17 @@ public class TrataClienteController extends Thread {
                     ArrayList<Usuario> listausr = usrdao.getListaUsuarios();
                     out.writeObject(listausr);
                 } else if (comando.equalsIgnoreCase("viagemIniciar")) {
-                    out.writeObject("ok"); 
+                    out.writeObject("ok");
+                    System.out.println("mensagem enviada");
+                    
                     // esperando o objeto usuário vir do cliente
-                    Viagem v = (Viagem) in.readObject();
+                    int codViagem = (int) in.readInt();
+                    System.out.println("Viagem recebida: "+codViagem);
                     // criando um Dao para armazenar no Banco
                     ViagemDao vDao = new ViagemDao();
-                    out.writeObject(vDao.iniciar(v));
+                    boolean result = vDao.iniciar(codViagem);
+                    out.writeObject(result);
+                    System.out.println("boolean enviado: "+result);
                 } else if (comando.equalsIgnoreCase("viagemFinalizar")) {
                     out.writeObject("ok");
                     Viagem v = (Viagem) in.readObject();

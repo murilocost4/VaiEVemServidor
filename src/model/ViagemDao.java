@@ -255,18 +255,22 @@ public class ViagemDao {
         }
     }
     
-    public boolean iniciar(Viagem v) {
+    public boolean iniciar(int codViagem) {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
             String sql = "UPDATE viagem SET status_viagem = 1 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
-            stmt.setInt(1, v.getTrip_id());
+            stmt.setInt(1, codViagem);
             int rowsAffected = stmt.executeUpdate();
         
         if (rowsAffected > 0) {
             result = true;  // A atualização foi bem-sucedida
         }
+        System.out.println("SQL executado: " + sql);
+        System.out.println("Trip ID recebido: " + codViagem);
+        System.out.println("Linhas afetadas: " + rowsAffected);
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
