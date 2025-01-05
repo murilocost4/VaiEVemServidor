@@ -121,7 +121,7 @@ public class Viagem implements Serializable{
         return codCondutor;
     }
     
-    public void setCodCondutor(int codPassageiro) {
+    public void setCodCondutor(int codCondutor) {
         this.codCondutor = codCondutor;
     }
     

@@ -84,7 +84,7 @@ public class ViagemDao {
         }
     }
     
-    public ArrayList<Viagem> getViagemCondutor(int codCondutor) {
+   public ArrayList<Viagem> getViagemCondutor(int codCondutor) {
     ArrayList<Viagem> listaViagens = new ArrayList<>();
 
     String queryViagem = "SELECT * FROM viagem WHERE condutor = ?";
@@ -95,21 +95,25 @@ public class ViagemDao {
 
     try (PreparedStatement psViagem = con.prepareStatement(queryViagem);
          PreparedStatement psStatusPassageiro = con.prepareStatement(queryStatusPassageiro)) {
-
-        // Configurando o código do condutor no PreparedStatement
+        
+        // Configurando o parâmetro do condutor
         psViagem.setInt(1, codCondutor);
-
+        
         try (ResultSet rsViagem = psViagem.executeQuery()) {
             while (rsViagem.next()) {
                 ArrayList<StatusPassageiro> statusPassageiroList = new ArrayList<>();
-
+                
+                // Configurando o parâmetro para buscar status dos passageiros
                 psStatusPassageiro.setInt(1, rsViagem.getInt("trip_id"));
                 try (ResultSet rsStatus = psStatusPassageiro.executeQuery()) {
                     while (rsStatus.next()) {
                         StatusPassageiro sp = new StatusPassageiro(
                                 rsStatus.getInt("passenger_trip_id"),
                                 rsStatus.getInt("viagem_trip_id"),
-                                new Passageiro(rsStatus.getInt("passageiro"), rsStatus.getString("nome")),
+                                new Passageiro(
+                                        rsStatus.getInt("passageiro"), 
+                                        rsStatus.getString("nome")
+                                ),
                                 rsStatus.getInt("status"),
                                 rsStatus.getTimestamp("hora_atualizacao")
                         );
@@ -117,6 +121,7 @@ public class ViagemDao {
                     }
                 }
 
+                // Criando o objeto Viagem
                 Viagem viagem = new Viagem(
                         rsViagem.getInt("trip_id"),
                         rsViagem.getString("origem"),
@@ -133,12 +138,15 @@ public class ViagemDao {
             }
         }
 
-        return listaViagens;
     } catch (Exception e) {
         e.printStackTrace();
-        return null;
+        return null; // Retorna null em caso de erro
     }
+    
+    return listaViagens; // Retorna a lista de viagens
 }
+
+
 
     
     // métod que fará INSERT no BANCO
@@ -247,15 +255,22 @@ public class ViagemDao {
         }
     }
     
-    public boolean iniciar(Viagem v) {
+    public boolean iniciar(int codViagem) {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "update viagem set status_viagem=2 where trip_id=?";
+            String sql = "UPDATE viagem SET status_viagem = 1 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
-            stmt.setInt(1, v.getTrip_id());
-            stmt.execute();
-            result = true;
+            stmt.setInt(1, codViagem);
+            int rowsAffected = stmt.executeUpdate();
+        
+        if (rowsAffected > 0) {
+            result = true;  // A atualização foi bem-sucedida
+        }
+        System.out.println("SQL executado: " + sql);
+        System.out.println("Trip ID recebido: " + codViagem);
+        System.out.println("Linhas afetadas: " + rowsAffected);
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -273,11 +288,14 @@ public class ViagemDao {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "update viagem set status_viagem=3 where trip_id=?";
+            String sql = "UPDATE viagem SET status_viagem = 2 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
             stmt.setInt(1, v.getTrip_id());
-            stmt.execute();
-            result = true;
+            int rowsAffected = stmt.executeUpdate();
+        
+        if (rowsAffected > 0) {
+            result = true;  // A atualização foi bem-sucedida
+        }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

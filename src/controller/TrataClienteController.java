@@ -74,6 +74,17 @@ public class TrataClienteController extends Thread {
                     ArrayList<Passageiro> listaPassageiro = usDao.getListaPassageiro();
                     //devolve a lista para o cliente
                     out.writeObject(listaPassageiro);
+                }else if (comando.equalsIgnoreCase("StatusPassageiroLista")){
+                    out.writeObject("ok");
+                    int viagemId = (int) in.readInt();
+                    // esse comando irá retornar todos os registros
+                    // que existem na tabela Condutor
+                    // criar objeto de ViagemDao
+                    StatusPassageiroDao spDao = new StatusPassageiroDao();
+                    // chama método getViagemLista() e guarda resultado em listaViagens
+                    ArrayList<StatusPassageiro> listasp = spDao.getListaSp(viagemId);
+                    //devolve a lista para o cliente
+                    out.writeObject(listasp);
                 }else if (comando.equalsIgnoreCase("ViagemLista")){
                     // esse comando irá retornar todos os registros
                     // que existem na tabela Viagem
@@ -84,14 +95,10 @@ public class TrataClienteController extends Thread {
                     //devolve a lista para o cliente
                     out.writeObject(listaViagens);
                 }else if (comando.equalsIgnoreCase("ViagemCondutorLista")){
-                    // esse comando irá retornar todos os registros
-                    // que existem na tabela Viagem
-                    // criar objeto de ViagemDao
+                    out.writeObject("ok");
+                    int codCondutor = (int) in.readInt();
                     ViagemDao vDao = new ViagemDao();
-                    int codCondutor = (int) in.read();
-                    // chama método getViagemLista() e guarda resultado em listaViagens
                     ArrayList<Viagem> listaViagens = vDao.getViagemCondutor(codCondutor);
-                    //devolve a lista para o cliente
                     out.writeObject(listaViagens);
                 }else if (comando.equalsIgnoreCase("ViagemInserir")){
                     // comando parar inserir em Viagem
@@ -148,14 +155,22 @@ public class TrataClienteController extends Thread {
                     out.writeObject(listausr);
                 } else if (comando.equalsIgnoreCase("viagemIniciar")) {
                     out.writeObject("ok");
-                    Viagem v = (Viagem) in.readObject();
+                    System.out.println("mensagem enviada");
+                    
+                    // esperando o objeto usuário vir do cliente
+                    int codViagem = (int) in.readInt();
+                    System.out.println("Viagem recebida: "+codViagem);
+                    // criando um Dao para armazenar no Banco
                     ViagemDao vDao = new ViagemDao();
-                    out.writeObject(vDao.iniciar(v));
+                    boolean result = vDao.iniciar(codViagem);
+                    out.writeObject(result);
+                    System.out.println("boolean enviado: "+result);
                 } else if (comando.equalsIgnoreCase("viagemFinalizar")) {
                     out.writeObject("ok");
                     Viagem v = (Viagem) in.readObject();
                     ViagemDao vDao = new ViagemDao();
-                    out.writeObject(vDao.finalizar(v));
+                    boolean result = vDao.finalizar(v);
+                    out.writeObject(result);
                 } else if (comando.equalsIgnoreCase("acompanharViagem")) {
                     out.writeObject("ok");
                     Viagem v = (Viagem) in.readObject();
