@@ -96,9 +96,12 @@ public class TrataClienteController extends Thread {
                     out.writeObject(listaViagens);
                 }else if (comando.equalsIgnoreCase("ViagemCondutorLista")){
                     out.writeObject("ok");
-                    int codCondutor = (int) in.readInt();
+                    System.out.println("mensagem enviada");
+                    Usuario usr = (Usuario) in.readObject();
+                    System.out.println("Codigo recebido: "+usr.getCodUsuario());
                     ViagemDao vDao = new ViagemDao();
-                    ArrayList<Viagem> listaViagens = vDao.getViagemCondutor(codCondutor);
+                    ArrayList<Viagem> listaViagens = vDao.getViagemCondutor(usr.getCodUsuario());
+                    System.out.println("lista enviada: "+listaViagens.toString());
                     out.writeObject(listaViagens);
                 }else if (comando.equalsIgnoreCase("ViagemInserir")){
                     // comando parar inserir em Viagem
