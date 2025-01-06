@@ -167,7 +167,7 @@ public class TrataClienteController extends Thread {
                     System.out.println("boolean enviado: "+result);
                 } else if (comando.equalsIgnoreCase("viagemFinalizar")) {
                     out.writeObject("ok");
-                    out.flush();
+                    //out.flush();
                     System.out.println("mensagem enviada");
                     
                     // esperando o objeto usuário vir do cliente
