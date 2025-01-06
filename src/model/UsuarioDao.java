@@ -173,7 +173,7 @@ public class UsuarioDao {
             }
             //stmt.setInt(5, ((usr instanceof Administrador) ? 1 : 0));
             stmt.setInt(8, admin);
-            stmt.setInt(6, usr.getCodUsuario());
+            stmt.setInt(9, usr.getCodUsuario());
 
             //executar o SCRIPT SQL
             stmt.execute();
@@ -252,11 +252,11 @@ public class UsuarioDao {
 
             // Construção baseada no tipo
             if (tipo == 1) {
-                usr = new Admin(id, nome, cpf, nascimento, endereco, email, senha, fone);
+                usr = new Admin(id, nome, cpf, nascimento, endereco, senha, email, fone);
             } else if (tipo == 2) {
-                usr = new Condutor(id, nome, cpf, nascimento, endereco, email, senha, fone);
+                usr = new Condutor(id, nome, cpf, nascimento, endereco, senha, email, fone);
             } else {
-                usr = new Passageiro(id, nome, cpf, nascimento, endereco, email, senha, fone);
+                usr = new Passageiro(id, nome, cpf, nascimento, endereco, senha, email, fone);
             }
 
                 // adicionando na lista auxiliar
