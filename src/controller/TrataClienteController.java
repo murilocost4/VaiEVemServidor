@@ -155,6 +155,19 @@ public class TrataClienteController extends Thread {
                     out.writeObject(listausr);
                 } else if (comando.equalsIgnoreCase("viagemIniciar")) {
                     out.writeObject("ok");
+                    out.flush();
+                    // esperando o objeto usuário vir do cliente
+                    int codViagem = in.readInt();
+                    System.out.println("Viagem recebida: "+codViagem);
+                    // criando um Dao para armazenar no Banco
+                    ViagemDao vDao = new ViagemDao();
+                    int result = vDao.iniciar(codViagem);
+                    out.writeInt(result);
+                    out.flush();
+                    System.out.println("boolean enviado: "+result);
+                } else if (comando.equalsIgnoreCase("viagemFinalizar")) {
+                    out.writeObject("ok");
+                    out.flush();
                     System.out.println("mensagem enviada");
                     
                     // esperando o objeto usuário vir do cliente
@@ -162,15 +175,10 @@ public class TrataClienteController extends Thread {
                     System.out.println("Viagem recebida: "+codViagem);
                     // criando um Dao para armazenar no Banco
                     ViagemDao vDao = new ViagemDao();
-                    boolean result = vDao.iniciar(codViagem);
-                    out.writeObject(result);
+                    int result = vDao.finalizar(codViagem);
+                    out.writeInt(result);
+                    out.flush();
                     System.out.println("boolean enviado: "+result);
-                } else if (comando.equalsIgnoreCase("viagemFinalizar")) {
-                    out.writeObject("ok");
-                    Viagem v = (Viagem) in.readObject();
-                    ViagemDao vDao = new ViagemDao();
-                    boolean result = vDao.finalizar(v);
-                    out.writeObject(result);
                 } else if (comando.equalsIgnoreCase("acompanharViagem")) {
                     out.writeObject("ok");
                     Viagem v = (Viagem) in.readObject();
@@ -188,6 +196,12 @@ public class TrataClienteController extends Thread {
                     Viagem v = (Viagem) in.readObject();
                     StatusPassageiroDao spDao = new StatusPassageiroDao();
                     out.writeObject(spDao.excluirDaViagem(v));
+                
+                }else if (comando.equalsIgnoreCase("excluirPassageiroUsuario")) {
+                    out.writeObject("ok");
+                    Usuario usr = (Usuario) in.readObject();
+                    StatusPassageiroDao spDao = new StatusPassageiroDao();
+                    out.writeObject(spDao.excluirDoPassageiro(usr));
                 
                 }else if (comando.equalsIgnoreCase("excluirStatusPassageiro")) {
                     out.writeObject("ok");

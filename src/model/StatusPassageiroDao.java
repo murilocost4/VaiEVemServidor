@@ -145,6 +145,34 @@ public class StatusPassageiroDao {
         }
     }
     
+    public boolean excluirDoPassageiro(Usuario usr){
+        PreparedStatement stmt = null;
+        boolean result = false;
+        try {
+            String sql = "delete from status_passageiro where passageiro=?";
+                    
+            //preparar o sql para ser executado pelo preparedStatement
+            // preparar -> deixar apto para substituir os ?
+            stmt = con.prepareStatement(sql);
+            //substituir os ?
+            stmt.setInt(1, usr.getCodUsuario());
+            //executar o script
+            stmt.execute();
+            // deu tudo certo.
+            result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+                con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+    
     public boolean excluir(StatusPassageiro sp){
         PreparedStatement stmt = null;
         boolean result = false;

@@ -255,9 +255,9 @@ public class ViagemDao {
         }
     }
     
-    public boolean iniciar(int codViagem) {
+    public int iniciar(int codViagem) {
         PreparedStatement stmt = null;
-        boolean result = false;
+        int result = 0;
         try {
             String sql = "UPDATE viagem SET status_viagem = 1 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
@@ -265,7 +265,7 @@ public class ViagemDao {
             int rowsAffected = stmt.executeUpdate();
         
         if (rowsAffected > 0) {
-            result = true;  // A atualização foi bem-sucedida
+            result = 1;  // A atualização foi bem-sucedida
         }
         System.out.println("SQL executado: " + sql);
         System.out.println("Trip ID recebido: " + codViagem);
@@ -284,18 +284,22 @@ public class ViagemDao {
         } 
     }
     
-    public boolean finalizar(Viagem v) {
+    public int finalizar(int codViagem) {
         PreparedStatement stmt = null;
-        boolean result = false;
+        int result = 0;
         try {
             String sql = "UPDATE viagem SET status_viagem = 2 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
-            stmt.setInt(1, v.getTrip_id());
+            stmt.setInt(1, codViagem);
             int rowsAffected = stmt.executeUpdate();
         
         if (rowsAffected > 0) {
-            result = true;  // A atualização foi bem-sucedida
+            result = 1;  // A atualização foi bem-sucedida
         }
+        System.out.println("SQL executado: " + sql);
+        System.out.println("Trip ID recebido: " + codViagem);
+        System.out.println("Linhas afetadas: " + rowsAffected);
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
