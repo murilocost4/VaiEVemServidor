@@ -33,9 +33,9 @@ public class ViagemDao {
     // select * from Viagem
     public ArrayList<Viagem> getViagemLista() {
     ArrayList<Viagem> listaViagens = new ArrayList<>();
-    
+
     String queryViagem = "SELECT * FROM viagem";
-    String queryStatusPassageiro = "SELECT * from status_passageiro " +
+    String queryStatusPassageiro = "SELECT passenger_trip_id, viagem_trip_id, passageiro, status, hora_atualizacao, nome " +
                                    "FROM status_passageiro sp " +
                                    "JOIN usuario u ON user_id = passageiro " +
                                    "WHERE viagem_trip_id = ?";
