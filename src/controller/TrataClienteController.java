@@ -189,12 +189,6 @@ public class TrataClienteController extends Thread {
                     out.writeObject(result);
                     out.flush();
                     System.out.println("boolean enviado: "+result);
-                } else if (comando.equalsIgnoreCase("acompanharViagem")) {
-                    out.writeObject("ok");
-                    Viagem v = (Viagem) in.readObject();
-                    ViagemDao vDao = new ViagemDao();
-                    out.writeObject(vDao.acompanharViagem(idUnico));
-                    
                 }else if (comando.equalsIgnoreCase("statusPassageiroInserir")) {
                     out.writeObject("ok");
                     StatusPassageiro sp = (StatusPassageiro) in.readObject();
@@ -229,11 +223,11 @@ public class TrataClienteController extends Thread {
                     StatusPassageiroDao spDao = new StatusPassageiroDao();
                     out.writeObject(spDao.excluir(sp));
                 
-                }else if (comando.equalsIgnoreCase("acompanharViagem")) {
+                }else if (comando.equalsIgnoreCase("getViagemById")) {
                     out.writeObject("ok");
-                    int idViagem = (int) in.readObject();
+                    Viagem v = (Viagem) in.readObject();
                     ViagemDao vDao = new ViagemDao();
-                    out.writeObject(vDao.acompanharViagem(idViagem));
+                    out.writeObject(vDao.acompanharViagem(v));
                 
                 }else if (comando.equalsIgnoreCase("selecionaEmbarcou")) {
                     out.writeObject("ok");
