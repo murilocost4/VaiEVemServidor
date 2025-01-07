@@ -14,8 +14,6 @@ public class Principal {
             if (Conector.getConnection() != null){
                 System.out.println("Conectado com sucesso no banco");
                 // para testar o select da marca
-                ViagemDao vDao = new ViagemDao();
-                vDao.getViagemLista();
             }
             
             // iniciando o servidor socket

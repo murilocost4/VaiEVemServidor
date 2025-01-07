@@ -123,7 +123,7 @@ public class Usuario implements Serializable {
     
     @Override
     public String toString() {
-        return "Usuario{" + "codUsuario=" + codUsuario + ", nomeUsuario=" + nomeUsuario + ", cpf=" + cpf + ", nascimento=" + nascimento + ", endereco=" + endereco + ", email=" + email + ", fone=" + fone +'}';
+        return "Usuario{" + "codUsuario=" + codUsuario + ", nomeUsuario=" + nomeUsuario + ", cpf=" + cpf + ", nascimento=" + nascimento + ", endereco=" + endereco + ", email=" + email + "Senha" + senha + ", fone=" + fone +'}';
     }
      
 }

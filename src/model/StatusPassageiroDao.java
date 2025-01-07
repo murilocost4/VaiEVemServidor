@@ -206,7 +206,7 @@ public class StatusPassageiroDao {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "update status_passageiro set status=2 where passenger_trip_id=?";
+            String sql = "update status_passageiro set status=1 where passenger_trip_id=?";
                     
             //preparar o sql para ser executado pelo preparedStatement
             // preparar -> deixar apto para substituir os ?
@@ -234,7 +234,7 @@ public class StatusPassageiroDao {
         PreparedStatement stmt = null;
         boolean result = false;
         try {
-            String sql = "update status_passageiro set status=3 where passenger_trip_id=?";
+            String sql = "update status_passageiro set status=2 where passenger_trip_id=?";
                     
             //preparar o sql para ser executado pelo preparedStatement
             // preparar -> deixar apto para substituir os ?

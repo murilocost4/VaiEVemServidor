@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
+import modelDominio.Usuario;
 import modelDominio.Passageiro;
 import modelDominio.StatusPassageiro;
 import modelDominio.Viagem;
@@ -34,7 +35,7 @@ public class ViagemDao {
     ArrayList<Viagem> listaViagens = new ArrayList<>();
     
     String queryViagem = "SELECT * FROM viagem";
-    String queryStatusPassageiro = "SELECT passenger_trip_id, viagem_trip_id, passageiro, status, hora_atualizacao, nome " +
+    String queryStatusPassageiro = "SELECT * from status_passageiro " +
                                    "FROM status_passageiro sp " +
                                    "JOIN usuario u ON user_id = passageiro " +
                                    "WHERE viagem_trip_id = ?";
@@ -146,6 +147,52 @@ public class ViagemDao {
     return listaViagens; // Retorna a lista de viagens
 }
 
+   public ArrayList<Viagem> getViagensPorUsuario(Usuario usuario) {
+    ArrayList<Viagem> listaViagensFiltradas = new ArrayList<>();
+    
+    String queryViagem = "SELECT * FROM viagem v " +
+                         "JOIN status_passageiro sp ON v.trip_id = sp.viagem_trip_id " +
+                         "WHERE sp.passageiro = ?";
+    
+    try (PreparedStatement psViagem = con.prepareStatement(queryViagem)) {
+        psViagem.setInt(1, usuario.getCodUsuario());
+        
+        try (ResultSet rsViagem = psViagem.executeQuery()) {
+            while (rsViagem.next()) {
+                ArrayList<StatusPassageiro> statusPassageiroList = new ArrayList<>();
+                
+                // Criando o objeto StatusPassageiro com informações da query
+                StatusPassageiro sp = new StatusPassageiro(
+                        rsViagem.getInt("passenger_trip_id"),
+                        rsViagem.getInt("viagem_trip_id"),
+                        new Passageiro(rsViagem.getInt("passageiro"), usuario.getNomeUsuario()),
+                        rsViagem.getInt("status"),
+                        rsViagem.getTimestamp("hora_atualizacao")
+                );
+                statusPassageiroList.add(sp);
+
+                // Criando o objeto Viagem com informações da query
+                Viagem viagem = new Viagem(
+                        rsViagem.getInt("trip_id"),
+                        rsViagem.getString("origem"),
+                        rsViagem.getString("destino"),
+                        rsViagem.getString("data"),
+                        rsViagem.getString("saida"),
+                        rsViagem.getString("retorno"),
+                        rsViagem.getInt("status_viagem"),
+                        rsViagem.getInt("condutor"),
+                        statusPassageiroList
+                );
+
+                listaViagensFiltradas.add(viagem);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    
+    return listaViagensFiltradas;
+}
 
 
     
@@ -226,6 +273,47 @@ public class ViagemDao {
         }
     }
     
+    public boolean excluirDoCondutor(Usuario usr) {
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    boolean result = true;
+
+    try {
+        // Comando SQL para verificar se existem viagens associadas ao condutor
+        String sql = "SELECT COUNT(*) FROM viagem WHERE condutor = ?";
+        stmt = con.prepareStatement(sql);
+
+        // Substituir o placeholder `?` pelo valor de codCondutor
+        stmt.setInt(1, usr.getCodUsuario());
+
+        // Executar a consulta
+        rs = stmt.executeQuery();
+
+        // Verificar se existe pelo menos uma viagem associada
+        if (rs.next() && rs.getInt(1) > 0) {
+            result = false; // Existe uma viagem com o condutor especificado
+        }
+    } catch (SQLException e) {
+        System.err.println("Erro ao verificar viagens do condutor com código " + usr.getCodUsuario() + ": " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        // Garantir que recursos sejam fechados corretamente
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            System.err.println("Erro ao fechar recursos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    return result;
+}
+
+
+
+    
     //Executa um DELETE na TABELA Viagem do Banco
     public boolean excluir(Viagem v){
         PreparedStatement stmt = null;
@@ -255,20 +343,20 @@ public class ViagemDao {
         }
     }
     
-    public int iniciar(int codViagem) {
+    public boolean iniciar(Viagem v) {
         PreparedStatement stmt = null;
-        int result = 0;
+        boolean result = false;
         try {
             String sql = "UPDATE viagem SET status_viagem = 1 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
-            stmt.setInt(1, codViagem);
+            stmt.setInt(1, v.getTrip_id());
             int rowsAffected = stmt.executeUpdate();
         
         if (rowsAffected > 0) {
-            result = 1;  // A atualização foi bem-sucedida
+            result = true;  // A atualização foi bem-sucedida
         }
         System.out.println("SQL executado: " + sql);
-        System.out.println("Trip ID recebido: " + codViagem);
+        System.out.println("Trip ID recebido: " + v.getTrip_id());
         System.out.println("Linhas afetadas: " + rowsAffected);
 
         } catch (Exception e) {
@@ -284,20 +372,20 @@ public class ViagemDao {
         } 
     }
     
-    public int finalizar(int codViagem) {
+    public boolean finalizar(Viagem v) {
         PreparedStatement stmt = null;
-        int result = 0;
+        boolean result = false;
         try {
             String sql = "UPDATE viagem SET status_viagem = 2 WHERE trip_id = ?";
             stmt = con.prepareStatement(sql);
-            stmt.setInt(1, codViagem);
+            stmt.setInt(1, v.getTrip_id());
             int rowsAffected = stmt.executeUpdate();
         
         if (rowsAffected > 0) {
-            result = 1;  // A atualização foi bem-sucedida
+            result = true;  // A atualização foi bem-sucedida
         }
         System.out.println("SQL executado: " + sql);
-        System.out.println("Trip ID recebido: " + codViagem);
+        System.out.println("Trip ID recebido: " + v.getTrip_id());
         System.out.println("Linhas afetadas: " + rowsAffected);
 
         } catch (Exception e) {

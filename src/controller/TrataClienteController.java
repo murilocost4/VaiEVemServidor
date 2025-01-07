@@ -103,6 +103,15 @@ public class TrataClienteController extends Thread {
                     ArrayList<Viagem> listaViagens = vDao.getViagemCondutor(usr.getCodUsuario());
                     System.out.println("lista enviada: "+listaViagens.toString());
                     out.writeObject(listaViagens);
+                }else if (comando.equalsIgnoreCase("ViagemPassageiroLista")){
+                    out.writeObject("ok");
+                    System.out.println("mensagem enviada");
+                    Usuario usr = (Usuario) in.readObject();
+                    System.out.println("Codigo recebido: "+usr.getCodUsuario());
+                    ViagemDao vDao = new ViagemDao();
+                    ArrayList<Viagem> listaViagens = vDao.getViagensPorUsuario(usr);
+                    System.out.println("lista enviada: "+listaViagens.toString());
+                    out.writeObject(listaViagens);
                 }else if (comando.equalsIgnoreCase("ViagemInserir")){
                     // comando parar inserir em Viagem
                     out.writeObject("ok"); // envia ok para clinte
@@ -160,26 +169,24 @@ public class TrataClienteController extends Thread {
                     out.writeObject("ok");
                     out.flush();
                     // esperando o objeto usuário vir do cliente
-                    int codViagem = in.readInt();
-                    System.out.println("Viagem recebida: "+codViagem);
+                    Viagem v = (Viagem) in.readObject();
+                    System.out.println("Viagem recebida: "+v.getTrip_id());
                     // criando um Dao para armazenar no Banco
                     ViagemDao vDao = new ViagemDao();
-                    int result = vDao.iniciar(codViagem);
-                    out.writeInt(result);
+                    boolean result = vDao.iniciar(v);
+                    out.writeObject(result);
                     out.flush();
                     System.out.println("boolean enviado: "+result);
                 } else if (comando.equalsIgnoreCase("viagemFinalizar")) {
                     out.writeObject("ok");
-                    //out.flush();
-                    System.out.println("mensagem enviada");
-                    
+                    out.flush();
                     // esperando o objeto usuário vir do cliente
-                    int codViagem = (int) in.readInt();
-                    System.out.println("Viagem recebida: "+codViagem);
+                    Viagem v = (Viagem) in.readObject();
+                    System.out.println("Viagem recebida: "+v.getTrip_id());
                     // criando um Dao para armazenar no Banco
                     ViagemDao vDao = new ViagemDao();
-                    int result = vDao.finalizar(codViagem);
-                    out.writeInt(result);
+                    boolean result = vDao.finalizar(v);
+                    out.writeObject(result);
                     out.flush();
                     System.out.println("boolean enviado: "+result);
                 } else if (comando.equalsIgnoreCase("acompanharViagem")) {
@@ -205,6 +212,16 @@ public class TrataClienteController extends Thread {
                     Usuario usr = (Usuario) in.readObject();
                     StatusPassageiroDao spDao = new StatusPassageiroDao();
                     out.writeObject(spDao.excluirDoPassageiro(usr));
+                
+                }else if (comando.equalsIgnoreCase("excluirDoCondutor")) {
+                    out.writeObject("ok");
+                    System.out.println("Mensagem enviada");
+                    Usuario usr = (Usuario) in.readObject();
+                    System.out.println("Codigo recebido: "+usr.getCodUsuario());
+                    ViagemDao vDao = new ViagemDao();
+                    boolean result = vDao.excluirDoCondutor(usr);
+                    System.out.println("Resultado enviado "+result);
+                    out.writeObject(result);
                 
                 }else if (comando.equalsIgnoreCase("excluirStatusPassageiro")) {
                     out.writeObject("ok");
