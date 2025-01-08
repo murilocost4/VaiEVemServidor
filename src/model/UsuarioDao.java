@@ -165,14 +165,16 @@ public class UsuarioDao {
             stmt.setString(6, usr.getEmail());
             stmt.setString(7, usr.getSenha());
             // se for admin guarda 1 senão guarda 0
-            int admin;
+            int tipo;
             if (usr instanceof Admin) {
-                admin = 1;
+                tipo = 1;
+            } else if (usr instanceof Condutor) {
+                tipo = 2;
             } else {
-                admin = 0;
+                tipo = 3;
             }
             //stmt.setInt(5, ((usr instanceof Administrador) ? 1 : 0));
-            stmt.setInt(8, admin);
+            stmt.setInt(8, tipo);
             stmt.setInt(9, usr.getCodUsuario());
 
             //executar o SCRIPT SQL
