@@ -227,6 +227,41 @@ public class UsuarioDao {
         }
     }
     
+    public boolean alteraSenha(int codUsuario, String senha) {
+    PreparedStatement stmt = null;
+    boolean result = false;
+
+    try {
+        // Criar o script SQL para verificar e atualizar o usuário
+        String sql = "UPDATE usuario SET senha = ? WHERE user_id = ?";
+        stmt = con.prepareStatement(sql);
+
+        // Substituir os parâmetros "?" do script SQL
+        stmt.setString(1, senha);
+        stmt.setInt(2, codUsuario);
+
+        // Executar o UPDATE e obter o número de linhas afetadas
+        int rowsAffected = stmt.executeUpdate();
+
+        // Verificar se alguma linha foi atualizada
+        if (rowsAffected > 0) {
+            result = true; // Senha alterada com sucesso
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (stmt != null) stmt.close();
+            if (con != null) con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    return result;
+}
+
+    
     public boolean verificarUsuario(Usuario usr) {
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -234,11 +269,11 @@ public class UsuarioDao {
 
     try {
         // Criar o script SQL para verificar usuário
-        String sql = "SELECT * FROM usuario WHERE user_id = ? AND senha = ?";
+        String sql = "SELECT * FROM usuario WHERE email = ? AND senha = ?";
         stmt = con.prepareStatement(sql);
 
         // Substituir os parâmetros "?" do script SQL
-        stmt.setInt(1, usr.getCodUsuario());
+        stmt.setString(1, usr.getEmail());
         stmt.setString(2, usr.getSenha());
 
         // Executar o SELECT e obter os resultados

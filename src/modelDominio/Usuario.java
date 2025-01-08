@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 public class Usuario implements Serializable {
     private static final long serialVersionUID = 123456789L;
-    
+
     private int codUsuario;
     private String nomeUsuario;
     private String cpf;
@@ -47,7 +47,7 @@ public class Usuario implements Serializable {
         this.email = email;
         this.senha = senha;
     }
-    
+
     public Usuario(int codUsuario, String nomeUsuario) {
         this.codUsuario = codUsuario;
         this.nomeUsuario = nomeUsuario;
@@ -110,6 +110,9 @@ public class Usuario implements Serializable {
     }
 
     public void setEmail(String email) {
+        if (email == null || !email.contains("@")) {
+        throw new IllegalArgumentException("Email inválido");
+        }
         this.email = email;
     }
 
@@ -120,10 +123,19 @@ public class Usuario implements Serializable {
     public void setFone(String fone) {
         this.fone = fone;
     }
-    
+
     @Override
     public String toString() {
-        return "Usuario{" + "codUsuario=" + codUsuario + ", nomeUsuario=" + nomeUsuario + ", cpf=" + cpf + ", nascimento=" + nascimento + ", endereco=" + endereco + ", email=" + email + "Senha" + senha + ", fone=" + fone +'}';
+        return "Usuario{" +
+                "codUsuario=" + codUsuario +
+                ", nomeUsuario='" + nomeUsuario + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", nascimento='" + nascimento + '\'' +
+                ", endereco='" + endereco + '\'' +
+                ", email='" + email + '\'' +
+                ", senha='" + senha + '\'' +
+                ", fone='" + fone + '\'' +
+                '}';
     }
-     
+
 }

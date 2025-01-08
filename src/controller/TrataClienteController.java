@@ -158,6 +158,17 @@ public class TrataClienteController extends Thread {
                     // criando um Dao para armazenar no Banco
                     UsuarioDao usrdao = new UsuarioDao();
                     out.writeObject(usrdao.excluir(usr));
+                }else if (comando.equalsIgnoreCase("alterarSenha")){
+                    out.writeObject("ok"); 
+                    // esperando o objeto usuário vir do cliente
+                    int codUsuario = (int) in.readObject();
+                    out.writeObject("ok");
+                    String senha = (String) in.readObject();
+                    System.out.println("ID Recebido: "+codUsuario);
+                    System.out.println("Senha Recebida: "+senha);
+                    // criando um Dao para armazenar no Banco
+                    UsuarioDao usrdao = new UsuarioDao();
+                    out.writeObject(usrdao.alteraSenha(codUsuario, senha));
                 }else if (comando.equalsIgnoreCase("verificaUsuario")){
                     out.writeObject("ok"); 
                     // esperando o objeto usuário vir do cliente
