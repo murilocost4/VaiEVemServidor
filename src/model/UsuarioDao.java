@@ -227,6 +227,43 @@ public class UsuarioDao {
         }
     }
     
+    public boolean verificarUsuario(Usuario usr) {
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    boolean result = false;
+
+    try {
+        // Criar o script SQL para verificar usuário
+        String sql = "SELECT * FROM usuario WHERE user_id = ? AND senha = ?";
+        stmt = con.prepareStatement(sql);
+
+        // Substituir os parâmetros "?" do script SQL
+        stmt.setInt(1, usr.getCodUsuario());
+        stmt.setString(2, usr.getSenha());
+
+        // Executar o SELECT e obter os resultados
+        rs = stmt.executeQuery();
+
+        // Verificar se a consulta retornou algum registro
+        if (rs.next()) {
+            result = true; // Usuário encontrado
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (con != null) con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    return result;
+}
+
+    
     public ArrayList<Usuario> getListaUsuarios() {
         Statement stmt = null; // usado para rodar SQL
         ArrayList<Usuario> listausr = new ArrayList<Usuario>();

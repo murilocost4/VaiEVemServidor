@@ -158,6 +158,13 @@ public class TrataClienteController extends Thread {
                     // criando um Dao para armazenar no Banco
                     UsuarioDao usrdao = new UsuarioDao();
                     out.writeObject(usrdao.excluir(usr));
+                }else if (comando.equalsIgnoreCase("verificaUsuario")){
+                    out.writeObject("ok"); 
+                    // esperando o objeto usuário vir do cliente
+                    Usuario usr = (Usuario) in.readObject();
+                    // criando um Dao para armazenar no Banco
+                    UsuarioDao usrdao = new UsuarioDao();
+                    out.writeObject(usrdao.verificarUsuario(usr));
                 }else if (comando.equalsIgnoreCase("UsuarioLista")){
                     out.writeObject("ok"); 
                     // no pedido da lista não precisa mais nenhum parâmetro
